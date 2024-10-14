@@ -40,6 +40,7 @@ jobs:
       env:
         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
+        chmod +x ./scripts/publish.sh
         ./scripts/publish.sh
     - name: Legacy publish
       if: steps.check-publish.outputs.publish_with_script != 'true'

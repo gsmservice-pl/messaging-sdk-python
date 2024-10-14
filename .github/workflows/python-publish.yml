@@ -28,25 +28,25 @@ jobs:
     - name: Install poetry
       run: curl -sSL https://install.python-poetry.org | python3 -
           poetry --version
-        - name: Check for publish.sh
-          id: check-publish
-          run: |
-            if [ -f scripts/publish.sh ]; then
-              echo "publish_with_script=true" >> $GITHUB_OUTPUT
-            fi
-        - name: Publish with script
-          if: steps.check-publish.outputs.publish_with_script == 'true'
-          env:
-            PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          run: |
-            ./scripts/publish.sh
-        - name: Legacy publish
-          if: steps.check-publish.outputs.publish_with_script != 'true'
-          env:
-            TWINE_USERNAME: __token__
-            TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-          run: |
-            python -m pip install --upgrade pip
-            pip install setuptools wheel twine
-            python setup.py sdist bdist_wheel
-            twine upload dist/*
+    - name: Check for publish.sh
+      id: check-publish
+      run: |
+        if [ -f scripts/publish.sh ]; then
+          echo "publish_with_script=true" >> $GITHUB_OUTPUT
+        fi
+    - name: Publish with script
+      if: steps.check-publish.outputs.publish_with_script == 'true'
+      env:
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        ./scripts/publish.sh
+    - name: Legacy publish
+      if: steps.check-publish.outputs.publish_with_script != 'true'
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+        python setup.py sdist bdist_wheel
+        twine upload dist/*

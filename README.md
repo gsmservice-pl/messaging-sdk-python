@@ -1,6 +1,6 @@
-[![PyPI - Version](https://img.shields.io/pypi/v/gsmservice_gateway)](https://www.speakeasy.com/?utm_source=gsmservice-gateway&utm_campaign=python)
+[![PyPI - Version](https://img.shields.io/pypi/v/gsmservice_gateway)](https://pypi.org/project/gsmservice-gateway/)
 [![GitHub License](https://img.shields.io/github/license/gsmservice-pl/messaging-sdk-php)](https://github.com/gsmservice-pl/messaging-sdk-php/blob/main/LICENSE)
-[![Static Badge](https://img.shields.io/badge/built_by-Speakeasy-yellow)](https://www.speakeasy.com/?utm_source=gsmservice-pl/messaging-sdk-php&utm_campaign=php)
+[![Static Badge](https://img.shields.io/badge/built_by-Speakeasy-yellow)](https://www.speakeasy.com/?utm_source=gsmservice-gateway&utm_campaign=python)
 # GSMService.pl Messaging REST API SDK for Python
 
 This package includes Messaging SDK for Python to send SMS & MMS messages directly from your app via https://bramka.gsmservice.pl messaging platform.

@@ -25,7 +25,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.incoming.list(page=1, limit=10)
@@ -71,7 +71,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.incoming.get_by_ids(ids=[

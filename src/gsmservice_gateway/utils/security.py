@@ -64,8 +64,8 @@ def get_security_from_env(security: Any, security_class: Any) -> Optional[BaseMo
 
     security_dict: Any = {}
 
-    if os.getenv("CLIENT_BEARER"):
-        security_dict["bearer"] = os.getenv("CLIENT_BEARER")
+    if os.getenv("GATEWAY_API_BEARER"):
+        security_dict["bearer"] = os.getenv("GATEWAY_API_BEARER")
 
     return security_class(**security_dict) if security_dict else None
 

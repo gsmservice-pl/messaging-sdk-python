@@ -25,7 +25,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.senders.list()
@@ -67,7 +67,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.senders.add(request={
@@ -114,7 +114,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.senders.delete(sender="Podpis")
@@ -160,7 +160,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.senders.set_default(sender="Podpis")

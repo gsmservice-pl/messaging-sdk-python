@@ -23,7 +23,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get()
@@ -67,7 +67,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get_subaccount(user_login="some-login")

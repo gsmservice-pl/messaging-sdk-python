@@ -10,7 +10,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.outgoing.sms.send(request=[
@@ -44,7 +44,7 @@ import os
 
 async def main():
     s = Client(
-        bearer=os.getenv("CLIENT_BEARER", ""),
+        bearer=os.getenv("GATEWAY_API_BEARER", ""),
     )
     res = await s.outgoing.sms.send_async(request=[
         {

@@ -74,7 +74,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.outgoing.sms.send(request=[
@@ -108,7 +108,7 @@ import os
 
 async def main():
     s = Client(
-        bearer=os.getenv("CLIENT_BEARER", ""),
+        bearer=os.getenv("GATEWAY_API_BEARER", ""),
     )
     res = await s.outgoing.sms.send_async(request=[
         {
@@ -183,7 +183,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get(,
@@ -203,7 +203,7 @@ import os
 
 s = Client(
     retry_config=RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False),
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get()
@@ -242,7 +242,7 @@ from gsmservice_gateway import Client, models
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = None
@@ -282,7 +282,7 @@ import os
 
 s = Client(
     server="sandbox",
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get()
@@ -303,7 +303,7 @@ import os
 
 s = Client(
     server_url="https://api.gsmservice.pl/rest",
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get()
@@ -405,7 +405,7 @@ This SDK supports the following security scheme globally:
 
 | Name                 | Type                 | Scheme               | Environment Variable |
 | -------------------- | -------------------- | -------------------- | -------------------- |
-| `bearer`             | http                 | HTTP Bearer          | `CLIENT_BEARER`      |
+| `bearer`             | http                 | HTTP Bearer          | `GATEWAY_API_BEARER` |
 
 To authenticate with the API the `bearer` parameter must be set when initializing the SDK client instance. For example:
 ```python
@@ -413,7 +413,7 @@ from gsmservice_gateway import Client
 import os
 
 s = Client(
-    bearer=os.getenv("CLIENT_BEARER", ""),
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
 )
 
 res = s.accounts.get()
@@ -439,7 +439,7 @@ logging.basicConfig(level=logging.DEBUG)
 s = Client(debug_logger=logging.getLogger("gsmservice_gateway"))
 ```
 
-You can also enable a default debug logger by setting an environment variable `CLIENT_DEBUG` to true.
+You can also enable a default debug logger by setting an environment variable `GATEWAY_API_DEBUG` to true.
 <!-- End Debugging [debug] -->
 
 <!-- Placeholder for Future Speakeasy SDK Sections -->

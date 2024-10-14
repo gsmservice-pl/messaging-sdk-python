@@ -26,7 +26,9 @@ jobs:
       with:
         python-version: '3.8'
     - name: Install poetry
-      run: curl -sSL https://install.python-poetry.org | python3 -poetry --version
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry --version
     - name: Check for publish.sh
       id: check-publish
       run: |

@@ -24,15 +24,7 @@ class PriceTypedDict(TypedDict):
     cid: NotRequired[Nullable[str]]
     r"""Custom message ID assigned by the User"""
     type: NotRequired[MessageType]
-    r"""Message type according to the table:
-
-    |type|Description|
-    |----|-----------|
-    |  1 | SMS PRO   |
-    |  3 | SMS ECO   |
-    |  4 | SMS 2WAY  |
-    | 10 | MMS       |
-    """
+    r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
     recipient: NotRequired[Nullable[str]]
     sender: NotRequired[Nullable[str]]
     r"""Message sender name"""
@@ -58,15 +50,7 @@ class Price(BaseModel):
     type: Annotated[Optional[MessageType], PlainValidator(validate_open_enum(True))] = (
         None
     )
-    r"""Message type according to the table:
-
-    |type|Description|
-    |----|-----------|
-    |  1 | SMS PRO   |
-    |  3 | SMS ECO   |
-    |  4 | SMS 2WAY  |
-    | 10 | MMS       |
-    """
+    r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
 
     recipient: OptionalNullable[str] = UNSET
 

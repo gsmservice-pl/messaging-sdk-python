@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 from .price import Price, PriceTypedDict
-from .sms import Sms, SmsTypedDict
+from .smsmessage import SmsMessage, SmsMessageTypedDict
 from gsmservice_gateway.types import BaseModel
 from typing import Dict, List, Union
 from typing_extensions import TypedDict
 
 
-GetSmsPriceRequestBodyTypedDict = Union[SmsTypedDict, List[SmsTypedDict]]
-r"""To check the price of a single SMS or messages with the same content to multiple recipients, pass in the Request Body a single `Sms` object with the properties of this message. To check the price of multiple messages with different content at the same time, pass in the Request Body an `array` of `Sms` objects with the properties of each message."""
+GetSmsPriceRequestBodyTypedDict = Union[SmsMessageTypedDict, List[SmsMessageTypedDict]]
+r"""To check the price of a single message or messages with the same content to multiple recipients, pass a single `SmsMessage` object with the properties of this message. To check the price of multiple messages with different content at the same time, pass a `List[SmsMessage]` with the properties of each message."""
 
 
-GetSmsPriceRequestBody = Union[Sms, List[Sms]]
-r"""To check the price of a single SMS or messages with the same content to multiple recipients, pass in the Request Body a single `Sms` object with the properties of this message. To check the price of multiple messages with different content at the same time, pass in the Request Body an `array` of `Sms` objects with the properties of each message."""
+GetSmsPriceRequestBody = Union[SmsMessage, List[SmsMessage]]
+r"""To check the price of a single message or messages with the same content to multiple recipients, pass a single `SmsMessage` object with the properties of this message. To check the price of multiple messages with different content at the same time, pass a `List[SmsMessage]` with the properties of each message."""
 
 
 class GetSmsPriceResponseTypedDict(TypedDict):

@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 from .message import Message, MessageTypedDict
-from .sms import Sms, SmsTypedDict
+from .smsmessage import SmsMessage, SmsMessageTypedDict
 from gsmservice_gateway.types import BaseModel
 from typing import Dict, List, Union
 from typing_extensions import TypedDict
 
 
-SendSmsRequestBodyTypedDict = Union[SmsTypedDict, List[SmsTypedDict]]
-r"""To send a single SMS or messages with the same content to multiple recipients, pass in the Request Body a single `Sms` object with the properties of this message. To send multiple messages with different content at the same time, pass in the Request Body an `array` of `Sms` objects with the properties of each message."""
+SendSmsRequestBodyTypedDict = Union[SmsMessageTypedDict, List[SmsMessageTypedDict]]
+r"""To send a single SMS or messages with the same content to multiple recipients, please pass a single `SmsMessage` object with the properties of this message. To send multiple messages with different content at the same time, please pass `List[SmsMessage]` with the properties of each message."""
 
 
-SendSmsRequestBody = Union[Sms, List[Sms]]
-r"""To send a single SMS or messages with the same content to multiple recipients, pass in the Request Body a single `Sms` object with the properties of this message. To send multiple messages with different content at the same time, pass in the Request Body an `array` of `Sms` objects with the properties of each message."""
+SendSmsRequestBody = Union[SmsMessage, List[SmsMessage]]
+r"""To send a single SMS or messages with the same content to multiple recipients, please pass a single `SmsMessage` object with the properties of this message. To send multiple messages with different content at the same time, please pass `List[SmsMessage]` with the properties of each message."""
 
 
 class SendSmsResponseTypedDict(TypedDict):

@@ -73,7 +73,7 @@ from .setdefaultsenderop import (
     SetDefaultSenderResponse,
     SetDefaultSenderResponseTypedDict,
 )
-from .sms import Recipients, RecipientsTypedDict, Sms, SmsTypedDict
+from .smsmessage import Recipients, RecipientsTypedDict, SmsMessage, SmsMessageTypedDict
 from .smstype import SmsType
 
 __all__ = [
@@ -146,7 +146,7 @@ __all__ = [
     "SetDefaultSenderRequestTypedDict",
     "SetDefaultSenderResponse",
     "SetDefaultSenderResponseTypedDict",
-    "Sms",
+    "SmsMessage",
+    "SmsMessageTypedDict",
     "SmsType",
-    "SmsTypedDict",
 ]

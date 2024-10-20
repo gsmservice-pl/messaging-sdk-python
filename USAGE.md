@@ -5,7 +5,6 @@ This example demonstrates simple sending SMS message to a single recipient:
 
 ```python
 # Synchronous Example
-import gsmservice_gateway
 from gsmservice_gateway import Client
 import os
 
@@ -20,7 +19,7 @@ res = s.outgoing.sms.send(request=[
         ],
         "message": "To jest treść wiadomości",
         "sender": "Bramka SMS",
-        "type": gsmservice_gateway.SmsType.SMS_PRO,
+        "type": 1,
         "unicode": True,
         "flash": False,
         "date_": None,
@@ -38,7 +37,6 @@ The same SDK client can also be used to make asychronous requests by importing a
 ```python
 # Asynchronous Example
 import asyncio
-import gsmservice_gateway
 from gsmservice_gateway import Client
 import os
 
@@ -51,7 +49,7 @@ async def main():
             "recipients": "+48999999999",
             "message": "To jest treść wiadomości",
             "sender": "Bramka SMS",
-            "type": gsmservice_gateway.SmsType.SMS_PRO,
+            "type": 1,
             "unicode": True,
             "flash": False,
             "date_": None,

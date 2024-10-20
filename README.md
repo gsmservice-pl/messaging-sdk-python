@@ -69,7 +69,6 @@ This example demonstrates simple sending SMS message to a single recipient:
 
 ```python
 # Synchronous Example
-import gsmservice_gateway
 from gsmservice_gateway import Client
 import os
 
@@ -84,7 +83,7 @@ res = s.outgoing.sms.send(request=[
         ],
         "message": "To jest treść wiadomości",
         "sender": "Bramka SMS",
-        "type": gsmservice_gateway.SmsType.SMS_PRO,
+        "type": 1,
         "unicode": True,
         "flash": False,
         "date_": None,
@@ -102,7 +101,6 @@ The same SDK client can also be used to make asychronous requests by importing a
 ```python
 # Asynchronous Example
 import asyncio
-import gsmservice_gateway
 from gsmservice_gateway import Client
 import os
 
@@ -115,7 +113,7 @@ async def main():
             "recipients": "+48999999999",
             "message": "To jest treść wiadomości",
             "sender": "Bramka SMS",
-            "type": gsmservice_gateway.SmsType.SMS_PRO,
+            "type": 1,
             "unicode": True,
             "flash": False,
             "date_": None,
@@ -156,10 +154,10 @@ asyncio.run(main())
 * [cancel_scheduled](docs/sdks/outgoing/README.md#cancel_scheduled) - Cancel a scheduled messages
 * [list](docs/sdks/outgoing/README.md#list) - Lists the history of sent messages
 
-#### [outgoing.sms](docs/sdks/smssdk/README.md)
+#### [outgoing.sms](docs/sdks/sms/README.md)
 
-* [get_price](docs/sdks/smssdk/README.md#get_price) - Check the price of SMS Messages
-* [send](docs/sdks/smssdk/README.md#send) - Send SMS Messages
+* [get_price](docs/sdks/sms/README.md#get_price) - Check the price of SMS Messages
+* [send](docs/sdks/sms/README.md#send) - Send SMS Messages
 
 ### [senders](docs/sdks/senders/README.md)
 

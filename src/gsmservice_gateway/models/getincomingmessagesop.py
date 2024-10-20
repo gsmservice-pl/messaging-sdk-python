@@ -10,14 +10,14 @@ from typing_extensions import Annotated, TypedDict
 
 class GetIncomingMessagesRequestTypedDict(TypedDict):
     ids: List[int]
-    r"""Message IDs assigned by the system (separated by comma). The system will accept a maximum of 50 identifiers in one call."""
+    r"""List[str] with Message IDs assigned by the system. The system will accept a maximum of 50 identifiers in one call."""
 
 
 class GetIncomingMessagesRequest(BaseModel):
     ids: Annotated[
         List[int], FieldMetadata(path=PathParamMetadata(style="simple", explode=True))
     ]
-    r"""Message IDs assigned by the system (separated by comma). The system will accept a maximum of 50 identifiers in one call."""
+    r"""List[str] with Message IDs assigned by the system. The system will accept a maximum of 50 identifiers in one call."""
 
 
 class GetIncomingMessagesResponseTypedDict(TypedDict):

@@ -25,15 +25,7 @@ class MessageTypedDict(TypedDict):
     cid: NotRequired[Nullable[str]]
     r"""Custom message ID assigned by the User"""
     type: NotRequired[MessageType]
-    r"""Message type according to the table:
-
-    |type|Description|
-    |----|-----------|
-    |  1 | SMS PRO   |
-    |  3 | SMS ECO   |
-    |  4 | SMS 2WAY  |
-    | 10 | MMS       |
-    """
+    r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
     recipient: NotRequired[str]
     r"""A telephone number in international format (with a plus sign and the country code at the beginning, e.g. +48 for Poland)"""
     sender: NotRequired[Nullable[str]]
@@ -68,15 +60,7 @@ class Message(BaseModel):
     type: Annotated[Optional[MessageType], PlainValidator(validate_open_enum(True))] = (
         None
     )
-    r"""Message type according to the table:
-
-    |type|Description|
-    |----|-----------|
-    |  1 | SMS PRO   |
-    |  3 | SMS ECO   |
-    |  4 | SMS 2WAY  |
-    | 10 | MMS       |
-    """
+    r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
 
     recipient: Optional[str] = None
     r"""A telephone number in international format (with a plus sign and the country code at the beginning, e.g. +48 for Poland)"""

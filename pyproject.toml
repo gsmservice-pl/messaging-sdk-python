@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gsmservice-gateway"
-version = "2.0.1"
+version = "2.0.4"
 description = "Python Client SDK for Messaging Gateway GSMService.pl"
 authors = ["GSMService.pl",]
 readme = "README-PYPI.md"

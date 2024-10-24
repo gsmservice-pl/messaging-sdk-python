@@ -3,7 +3,7 @@
 import importlib.metadata
 
 __title__: str = "gsmservice-gateway"
-__version__: str = "2.0.1"
+__version__: str = "2.0.4"
 
 try:
     if __package__ is not None:

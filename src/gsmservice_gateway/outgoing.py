@@ -4,6 +4,7 @@ from .basesdk import BaseSDK
 from .sdkconfiguration import SDKConfiguration
 from gsmservice_gateway import models, utils
 from gsmservice_gateway._hooks import HookContext
+from gsmservice_gateway.mms import Mms
 from gsmservice_gateway.sms import Sms
 from gsmservice_gateway.types import OptionalNullable, UNSET
 from gsmservice_gateway.utils import get_security_from_env
@@ -11,6 +12,7 @@ from typing import Any, List, Optional
 
 
 class Outgoing(BaseSDK):
+    mms: Mms
     sms: Sms
 
     def __init__(self, sdk_config: SDKConfiguration) -> None:
@@ -19,6 +21,7 @@ class Outgoing(BaseSDK):
         self._init_sdks()
 
     def _init_sdks(self):
+        self.mms = Mms(self.sdk_configuration)
         self.sms = Sms(self.sdk_configuration)
 
     def get_by_ids(

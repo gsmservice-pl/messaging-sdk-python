@@ -29,6 +29,12 @@ from .getmessagesop import (
     GetMessagesResponse,
     GetMessagesResponseTypedDict,
 )
+from .getmmspriceop import (
+    GetMmsPriceRequestBody,
+    GetMmsPriceRequestBodyTypedDict,
+    GetMmsPriceResponse,
+    GetMmsPriceResponseTypedDict,
+)
 from .getsmspriceop import (
     GetSmsPriceRequestBody,
     GetSmsPriceRequestBodyTypedDict,
@@ -54,6 +60,14 @@ from .listmessagesop import (
 )
 from .message import Message, MessageTypedDict
 from .messagetype import MessageType
+from .mmsmessage import (
+    Attachments,
+    AttachmentsTypedDict,
+    MmsMessage,
+    MmsMessageTypedDict,
+    Recipients,
+    RecipientsTypedDict,
+)
 from .phonenumberwithcid import PhoneNumberWithCid, PhoneNumberWithCidTypedDict
 from .pingresponse import PingResponse, PingResponseTypedDict
 from .price import Price, PriceTypedDict
@@ -61,6 +75,12 @@ from .sdkerror import SDKError
 from .security import Security, SecurityTypedDict
 from .sender import Sender, SenderTypedDict
 from .sender_input import SenderInput, SenderInputTypedDict
+from .sendmmsop import (
+    SendMmsRequestBody,
+    SendMmsRequestBodyTypedDict,
+    SendMmsResponse,
+    SendMmsResponseTypedDict,
+)
 from .sendsmsop import (
     SendSmsRequestBody,
     SendSmsRequestBodyTypedDict,
@@ -73,7 +93,12 @@ from .setdefaultsenderop import (
     SetDefaultSenderResponse,
     SetDefaultSenderResponseTypedDict,
 )
-from .smsmessage import Recipients, RecipientsTypedDict, SmsMessage, SmsMessageTypedDict
+from .smsmessage import (
+    SmsMessage,
+    SmsMessageRecipients,
+    SmsMessageRecipientsTypedDict,
+    SmsMessageTypedDict,
+)
 from .smstype import SmsType
 
 __all__ = [
@@ -82,6 +107,8 @@ __all__ = [
     "AccountType",
     "AddSenderResponse",
     "AddSenderResponseTypedDict",
+    "Attachments",
+    "AttachmentsTypedDict",
     "CancelMessagesRequest",
     "CancelMessagesRequestTypedDict",
     "CancelMessagesResponse",
@@ -104,6 +131,10 @@ __all__ = [
     "GetMessagesRequestTypedDict",
     "GetMessagesResponse",
     "GetMessagesResponseTypedDict",
+    "GetMmsPriceRequestBody",
+    "GetMmsPriceRequestBodyTypedDict",
+    "GetMmsPriceResponse",
+    "GetMmsPriceResponseTypedDict",
     "GetSmsPriceRequestBody",
     "GetSmsPriceRequestBodyTypedDict",
     "GetSmsPriceResponse",
@@ -123,6 +154,8 @@ __all__ = [
     "Message",
     "MessageType",
     "MessageTypedDict",
+    "MmsMessage",
+    "MmsMessageTypedDict",
     "PhoneNumberWithCid",
     "PhoneNumberWithCidTypedDict",
     "PingResponse",
@@ -134,6 +167,10 @@ __all__ = [
     "SDKError",
     "Security",
     "SecurityTypedDict",
+    "SendMmsRequestBody",
+    "SendMmsRequestBodyTypedDict",
+    "SendMmsResponse",
+    "SendMmsResponseTypedDict",
     "SendSmsRequestBody",
     "SendSmsRequestBodyTypedDict",
     "SendSmsResponse",
@@ -147,6 +184,8 @@ __all__ = [
     "SetDefaultSenderResponse",
     "SetDefaultSenderResponseTypedDict",
     "SmsMessage",
+    "SmsMessageRecipients",
+    "SmsMessageRecipientsTypedDict",
     "SmsMessageTypedDict",
     "SmsType",
 ]

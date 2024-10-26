@@ -25,7 +25,8 @@ class PriceTypedDict(TypedDict):
     r"""Custom message ID assigned by the User"""
     type: NotRequired[MessageType]
     r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
-    recipient: NotRequired[Nullable[str]]
+    recipient: NotRequired[str]
+    r"""A telephone number in international format (with a plus sign and the country code at the beginning, e.g. +48 for Poland)"""
     sender: NotRequired[Nullable[str]]
     r"""Message sender name"""
     parts: NotRequired[Nullable[int]]
@@ -52,7 +53,8 @@ class Price(BaseModel):
     )
     r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
 
-    recipient: OptionalNullable[str] = UNSET
+    recipient: Optional[str] = None
+    r"""A telephone number in international format (with a plus sign and the country code at the beginning, e.g. +48 for Poland)"""
 
     sender: OptionalNullable[str] = UNSET
     r"""Message sender name"""
@@ -82,7 +84,7 @@ class Price(BaseModel):
             "flash",
             "price",
         ]
-        nullable_fields = ["error", "cid", "recipient", "sender", "parts"]
+        nullable_fields = ["error", "cid", "sender", "parts"]
         null_default_fields = []
 
         serialized = handler(self)

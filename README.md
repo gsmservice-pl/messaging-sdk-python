@@ -125,6 +125,68 @@ async def main():
 
 asyncio.run(main())
 ```
+
+### Sending single MMS Message
+
+This example demonstrates simple sending MMS message to a single recipient:
+
+```python
+# Synchronous Example
+from gsmservice_gateway import Client
+import os
+
+s = Client(
+    bearer=os.getenv("GATEWAY_API_BEARER", ""),
+)
+
+res = s.outgoing.mms.send(request=[
+    {
+        "recipients": [
+            "+48999999999",
+        ],
+        "message": "To jest treść wiadomości",
+        "subject": "To jest temat wiadomości",
+        "attachments": [
+            "<file_body in base64 format>",
+        ],
+        "date_": None,
+    },
+])
+
+if res is not None:
+    # handle response
+    pass
+```
+
+</br>
+
+The same SDK client can also be used to make asychronous requests by importing asyncio.
+```python
+# Asynchronous Example
+import asyncio
+from gsmservice_gateway import Client
+import os
+
+async def main():
+    s = Client(
+        bearer=os.getenv("GATEWAY_API_BEARER", ""),
+    )
+    res = await s.outgoing.mms.send_async(request={
+        "recipients": {
+            "nr": "+48999999999",
+            "cid": "my-id-1113",
+        },
+        "message": "To jest treść wiadomości",
+        "subject": "To jest temat wiadomości",
+        "attachments": "<file_body in base64 format>",
+        "date_": None,
+    })
+    if res is not None:
+        # handle response
+        pass
+
+asyncio.run(main())
+```
 <!-- End SDK Example Usage [usage] -->
 
 <!-- Start Available Resources and Operations [operations] -->
@@ -153,6 +215,11 @@ asyncio.run(main())
 * [get_by_ids](docs/sdks/outgoing/README.md#get_by_ids) - Get the messages details and status by IDs
 * [cancel_scheduled](docs/sdks/outgoing/README.md#cancel_scheduled) - Cancel a scheduled messages
 * [list](docs/sdks/outgoing/README.md#list) - Lists the history of sent messages
+
+#### [outgoing.mms](docs/sdks/mms/README.md)
+
+* [get_price](docs/sdks/mms/README.md#get_price) - Check the price of MMS Messages
+* [send](docs/sdks/mms/README.md#send) - Send MMS Messages
 
 #### [outgoing.sms](docs/sdks/sms/README.md)
 

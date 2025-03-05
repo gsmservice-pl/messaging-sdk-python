@@ -18,17 +18,16 @@ As a successful result a `ListIncomingMessagesResponse` object will be returned 
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.incoming.list(page=1, limit=10)
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.incoming.list()
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -46,9 +45,10 @@ if res is not None:
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| models.ErrorResponseError    | 400, 401, 403, 404, 4XX, 5XX | application/problem+json     |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## get_by_ids
 
@@ -60,19 +60,18 @@ As a successful result a `GetIncomingMessagesResponse` object will be returned w
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.incoming.get_by_ids(ids=[
-    43456,
-])
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.incoming.get_by_ids(ids=[
+        43456,
+    ])
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -91,4 +90,5 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 404, 4XX, 5XX   | application/problem+json  |
+| models.ErrorResponseError | 400, 401, 404, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |

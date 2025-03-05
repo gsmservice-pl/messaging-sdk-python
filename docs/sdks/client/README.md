@@ -2,7 +2,7 @@
 
 ## Overview
 
-Messaging Gateway GSMService.pl: This package includes Messaging SDK for Python to send SMS and MMS messages directly from your app via [https://bramka.gsmservice.pl](https://bramka.gsmservice.pl) messaging platform.
+Messaging Gateway SzybkiSMS.pl (former GSMService.pl): This package includes Messaging SDK for Python to send SMS and MMS messages directly from your app via [https://szybkisms.pl](https://szybkisms.pl) messaging platform.
 
 *Client* class is used to initialize SDK environment.
 
@@ -29,5 +29,7 @@ s = Client(
 
 ```
 
-Bramka GSMService.pl
-<https://bramka.gsmservice.pl>
+SzybkiSMS.pl
+<https://szybkisms.pl>
+
+### Available Operations

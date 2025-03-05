@@ -19,19 +19,18 @@ As a successful result a `GetMessagesResponse` object will be returned containin
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.get_by_ids(ids=[
-    43456,
-])
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.outgoing.get_by_ids(ids=[
+        43456,
+    ])
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -48,9 +47,10 @@ if res is not None:
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| models.ErrorResponseError    | 400, 401, 403, 404, 4XX, 5XX | application/problem+json     |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## cancel_scheduled
 
@@ -64,19 +64,18 @@ As a successful result a `CancelMessagesResponse` object will be returned, with 
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.cancel_scheduled(ids=[
-    43456,
-])
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.outgoing.cancel_scheduled(ids=[
+        43456,
+    ])
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -93,9 +92,10 @@ if res is not None:
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| models.ErrorResponseError    | 400, 401, 403, 404, 4XX, 5XX | application/problem+json     |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## list
 
@@ -107,17 +107,16 @@ As a successful result a `ListMessagesResponse` object will be returned containi
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.list(page=1, limit=10)
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.outgoing.list()
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -135,6 +134,7 @@ if res is not None:
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| models.ErrorResponseError    | 400, 401, 403, 404, 4XX, 5XX | application/problem+json     |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |

@@ -8,7 +8,7 @@ from gsmservice_gateway.mms import Mms
 from gsmservice_gateway.sms import Sms
 from gsmservice_gateway.types import OptionalNullable, UNSET
 from gsmservice_gateway.utils import get_security_from_env
-from typing import Any, List, Optional
+from typing import Any, List, Mapping, Optional
 
 
 class Outgoing(BaseSDK):
@@ -31,6 +31,7 @@ class Outgoing(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetMessagesResponse:
         r"""Get the messages details and status by IDs
 
@@ -42,6 +43,7 @@ class Outgoing(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -50,12 +52,14 @@ class Outgoing(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         request = models.GetMessagesRequest(
             ids=ids,
         )
 
-        req = self.build_request(
+        req = self._build_request(
             method="GET",
             path="/messages/{ids}",
             base_url=base_url,
@@ -66,6 +70,7 @@ class Outgoing(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
         )
@@ -84,6 +89,7 @@ class Outgoing(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="getMessages",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -95,19 +101,24 @@ class Outgoing(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.GetMessagesResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Message]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res,
-            ["400", "401", "403", "404", "4XX", "5XX"],
-            "application/problem+json",
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
@@ -125,6 +136,7 @@ class Outgoing(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetMessagesResponse:
         r"""Get the messages details and status by IDs
 
@@ -136,6 +148,7 @@ class Outgoing(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -144,12 +157,14 @@ class Outgoing(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         request = models.GetMessagesRequest(
             ids=ids,
         )
 
-        req = self.build_request_async(
+        req = self._build_request_async(
             method="GET",
             path="/messages/{ids}",
             base_url=base_url,
@@ -160,6 +175,7 @@ class Outgoing(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
         )
@@ -178,6 +194,7 @@ class Outgoing(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="getMessages",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -189,19 +206,24 @@ class Outgoing(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.GetMessagesResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Message]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res,
-            ["400", "401", "403", "404", "4XX", "5XX"],
-            "application/problem+json",
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
@@ -219,6 +241,7 @@ class Outgoing(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.CancelMessagesResponse:
         r"""Cancel a scheduled messages
 
@@ -232,6 +255,7 @@ class Outgoing(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -240,12 +264,14 @@ class Outgoing(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         request = models.CancelMessagesRequest(
             ids=ids,
         )
 
-        req = self.build_request(
+        req = self._build_request(
             method="DELETE",
             path="/messages/{ids}",
             base_url=base_url,
@@ -256,6 +282,7 @@ class Outgoing(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
         )
@@ -274,6 +301,7 @@ class Outgoing(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="cancelMessages",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -285,7 +313,7 @@ class Outgoing(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.CancelMessagesResponse(
                 result=utils.unmarshal_json(
@@ -294,12 +322,17 @@ class Outgoing(BaseSDK):
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res,
-            ["400", "401", "403", "404", "4XX", "5XX"],
-            "application/problem+json",
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
@@ -317,6 +350,7 @@ class Outgoing(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.CancelMessagesResponse:
         r"""Cancel a scheduled messages
 
@@ -330,6 +364,7 @@ class Outgoing(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -338,12 +373,14 @@ class Outgoing(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         request = models.CancelMessagesRequest(
             ids=ids,
         )
 
-        req = self.build_request_async(
+        req = self._build_request_async(
             method="DELETE",
             path="/messages/{ids}",
             base_url=base_url,
@@ -354,6 +391,7 @@ class Outgoing(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
         )
@@ -372,6 +410,7 @@ class Outgoing(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="cancelMessages",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -383,7 +422,7 @@ class Outgoing(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.CancelMessagesResponse(
                 result=utils.unmarshal_json(
@@ -392,12 +431,17 @@ class Outgoing(BaseSDK):
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res,
-            ["400", "401", "403", "404", "4XX", "5XX"],
-            "application/problem+json",
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
@@ -416,6 +460,7 @@ class Outgoing(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListMessagesResponse:
         r"""Lists the history of sent messages
 
@@ -428,6 +473,7 @@ class Outgoing(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -436,13 +482,15 @@ class Outgoing(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         request = models.ListMessagesRequest(
             page=page,
             limit=limit,
         )
 
-        req = self.build_request(
+        req = self._build_request(
             method="GET",
             path="/messages",
             base_url=base_url,
@@ -453,6 +501,7 @@ class Outgoing(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
         )
@@ -471,6 +520,7 @@ class Outgoing(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="listMessages",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -482,19 +532,24 @@ class Outgoing(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.ListMessagesResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Message]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res,
-            ["400", "401", "403", "404", "4XX", "5XX"],
-            "application/problem+json",
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
@@ -513,6 +568,7 @@ class Outgoing(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.ListMessagesResponse:
         r"""Lists the history of sent messages
 
@@ -525,6 +581,7 @@ class Outgoing(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -533,13 +590,15 @@ class Outgoing(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         request = models.ListMessagesRequest(
             page=page,
             limit=limit,
         )
 
-        req = self.build_request_async(
+        req = self._build_request_async(
             method="GET",
             path="/messages",
             base_url=base_url,
@@ -550,6 +609,7 @@ class Outgoing(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             timeout_ms=timeout_ms,
         )
@@ -568,6 +628,7 @@ class Outgoing(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="listMessages",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -579,19 +640,24 @@ class Outgoing(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.ListMessagesResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Message]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res,
-            ["400", "401", "403", "404", "4XX", "5XX"],
-            "application/problem+json",
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)

@@ -21,30 +21,29 @@ As a successful result a `GetMmsPriceResponse` object will be returned with `res
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.mms.get_price(request=[
-    {
-        "recipients": {
-            "nr": "+48999999999",
-            "cid": "my-id-1113",
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.get_price(request=[
+        {
+            "recipients": {
+                "nr": "+48999999999",
+                "cid": "my-id-1113",
+            },
+            "subject": "To jest temat wiadomości",
+            "message": "To jest treść wiadomości",
+            "attachments": [
+                "<file_body in base64 format>",
+            ],
+            "date_": None,
         },
-        "message": "To jest treść wiadomości",
-        "subject": "To jest temat wiadomości",
-        "attachments": [
-            "<file_body in base64 format>",
-        ],
-        "date_": None,
-    },
-])
+    ])
 
-if res is not None:
-    # handle response
-    pass
+    # Handle response
+    print(res)
 
 ```
 
@@ -63,7 +62,8 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 4XX, 5XX        | application/problem+json  |
+| models.ErrorResponseError | 400, 401, 4XX             | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## send
 
@@ -77,29 +77,28 @@ As a successful result a `SendMmsResponse` object will be returned with `result`
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.mms.send(request=[
-    {
-        "recipients": [
-            "+48999999999",
-        ],
-        "message": "To jest treść wiadomości",
-        "subject": "To jest temat wiadomości",
-        "attachments": [
-            "<file_body in base64 format>",
-        ],
-        "date_": None,
-    },
-])
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.outgoing.mms.send(request=[
+        {
+            "recipients": [
+                "+48999999999",
+            ],
+            "subject": "To jest temat wiadomości",
+            "message": "To jest treść wiadomości",
+            "attachments": [
+                "<file_body in base64 format>",
+            ],
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -118,4 +117,5 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX, 5XX   | application/problem+json  |
+| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |

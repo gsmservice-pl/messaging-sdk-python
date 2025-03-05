@@ -1,35 +1,47 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/gsmservice_gateway)](https://pypi.org/project/gsmservice-gateway/)
 [![GitHub License](https://img.shields.io/github/license/gsmservice-pl/messaging-sdk-python)](https://github.com/gsmservice-pl/messaging-sdk-python/blob/main/LICENSE)
 [![Static Badge](https://img.shields.io/badge/built_by-Speakeasy-yellow)](https://www.speakeasy.com/?utm_source=gsmservice-gateway&utm_campaign=python)
-# GSMService.pl Messaging REST API SDK for Python
+# SzybkiSMS.pl Messaging REST API SDK for Python (powered by GSMService.pl)
 
-This package includes Messaging SDK for Python to send SMS & MMS messages directly from your app via https://bramka.gsmservice.pl messaging platform.
+This package includes Messaging SDK for Python to send SMS & MMS messages directly from your app via https://szybkisms.pl messaging platform.
 
 ## Additional documentation:
 
 A documentation of all methods and types is available below in section [Available Resources and Operations
 ](#available-resources-and-operations).
 
-Also you can refer to the [REST API documentation](https://api.gsmservice.pl/rest/) for additional details about the basics of this SDK.
+Also you can refer to the [REST API documentation](https://api.szybkisms.pl/rest/) for additional details about the basics of this SDK.
 <!-- No Summary [summary] -->
 
 <!-- Start Table of Contents [toc] -->
 ## Table of Contents
+<!-- $toc-max-depth=2 -->
+* [SzybkiSMS.pl Messaging REST API SDK for Python (powered by GSMService.pl)](#szybkismspl-messaging-rest-api-sdk-for-python-powered-by-gsmservicepl)
+  * [Additional documentation:](#additional-documentation)
+  * [SDK Installation](#sdk-installation)
+  * [IDE Support](#ide-support)
+  * [SDK Example Usage](#sdk-example-usage)
+  * [Available Resources and Operations](#available-resources-and-operations)
+  * [Retries](#retries)
+  * [Error Handling](#error-handling)
+  * [Server Selection](#server-selection)
+  * [Custom HTTP Client](#custom-http-client)
+  * [Authentication](#authentication)
+  * [Resource Management](#resource-management)
+  * [Debugging](#debugging)
+* [Development](#development)
+  * [Maturity](#maturity)
+  * [Contributions](#contributions)
 
-* [SDK Installation](#sdk-installation)
-* [IDE Support](#ide-support)
-* [SDK Example Usage](#sdk-example-usage)
-* [Available Resources and Operations](#available-resources-and-operations)
-* [Retries](#retries)
-* [Error Handling](#error-handling)
-* [Server Selection](#server-selection)
-* [Custom HTTP Client](#custom-http-client)
-* [Authentication](#authentication)
-* [Debugging](#debugging)
 <!-- End Table of Contents [toc] -->
 
 <!-- Start SDK Installation [installation] -->
 ## SDK Installation
+
+> [!NOTE]
+> **Python version upgrade policy**
+>
+> Once a Python version reaches its [official end of life date](https://devguide.python.org/versions/), a 3-month grace period is provided for users to upgrade. Following this grace period, the minimum python version supported in the SDK will be updated.
 
 The SDK can be installed with either *pip* or *poetry* package managers.
 
@@ -48,6 +60,37 @@ pip install gsmservice-gateway
 ```bash
 poetry add gsmservice-gateway
 ```
+
+### Shell and script usage with `uv`
+
+You can use this SDK in a Python shell with [uv](https://docs.astral.sh/uv/) and the `uvx` command that comes with it like so:
+
+```shell
+uvx --from gsmservice-gateway python
+```
+
+It's also possible to write a standalone Python script without needing to set up a whole project like so:
+
+```python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "gsmservice-gateway",
+# ]
+# ///
+
+from gsmservice_gateway import Client
+
+sdk = Client(
+  # SDK arguments
+)
+
+# Rest of script here...
+```
+
+Once that is saved to a file, you can run it with `uv run script.py` where
+`script.py` can be replaced with the actual file name.
 <!-- End SDK Installation [installation] -->
 
 <!-- Start IDE Support [idesupport] -->
@@ -70,29 +113,28 @@ This example demonstrates simple sending SMS message to a single recipient:
 ```python
 # Synchronous Example
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.sms.send(request=[
-    {
-        "recipients": [
-            "+48999999999",
-        ],
-        "message": "To jest treść wiadomości",
-        "sender": "Bramka SMS",
-        "type": 1,
-        "unicode": True,
-        "flash": False,
-        "date_": None,
-    },
-])
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.outgoing.sms.send(request=[
+        {
+            "recipients": [
+                "+48999999999",
+            ],
+            "message": "To jest treść wiadomości",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": False,
+            "flash": False,
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
 ```
 
 </br>
@@ -102,26 +144,27 @@ The same SDK client can also be used to make asychronous requests by importing a
 # Asynchronous Example
 import asyncio
 from gsmservice_gateway import Client
-import os
 
 async def main():
-    s = Client(
-        bearer=os.getenv("GATEWAY_API_BEARER", ""),
-    )
-    res = await s.outgoing.sms.send_async(request=[
-        {
-            "recipients": "+48999999999",
-            "message": "To jest treść wiadomości",
-            "sender": "Bramka SMS",
-            "type": 1,
-            "unicode": True,
-            "flash": False,
-            "date_": None,
-        },
-    ])
-    if res is not None:
-        # handle response
-        pass
+
+    async with Client(
+        bearer="<YOUR API ACCESS TOKEN>",
+    ) as client:
+
+        res = await client.outgoing.sms.send_async(request=[
+            {
+                "recipients": "+48999999999",
+                "message": "To jest treść wiadomości",
+                "sender": "Bramka SMS",
+                "type": 1,
+                "unicode": False,
+                "flash": False,
+                "date_": None,
+            },
+        ])
+
+        # Handle response
+        print(res)
 
 asyncio.run(main())
 ```
@@ -133,29 +176,28 @@ This example demonstrates simple sending MMS message to a single recipient:
 ```python
 # Synchronous Example
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.outgoing.mms.send(request=[
-    {
-        "recipients": [
-            "+48999999999",
-        ],
-        "message": "To jest treść wiadomości",
-        "subject": "To jest temat wiadomości",
-        "attachments": [
-            "<file_body in base64 format>",
-        ],
-        "date_": None,
-    },
-])
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.outgoing.mms.send(request=[
+        {
+            "recipients": [
+                "+48999999999",
+            ],
+            "subject": "To jest temat wiadomości",
+            "message": "To jest treść wiadomości",
+            "attachments": [
+                "<file_body in base64 format>",
+            ],
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
 ```
 
 </br>
@@ -165,25 +207,26 @@ The same SDK client can also be used to make asychronous requests by importing a
 # Asynchronous Example
 import asyncio
 from gsmservice_gateway import Client
-import os
 
 async def main():
-    s = Client(
-        bearer=os.getenv("GATEWAY_API_BEARER", ""),
-    )
-    res = await s.outgoing.mms.send_async(request={
-        "recipients": {
-            "nr": "+48999999999",
-            "cid": "my-id-1113",
-        },
-        "message": "To jest treść wiadomości",
-        "subject": "To jest temat wiadomości",
-        "attachments": "<file_body in base64 format>",
-        "date_": None,
-    })
-    if res is not None:
-        # handle response
-        pass
+
+    async with Client(
+        bearer="<YOUR API ACCESS TOKEN>",
+    ) as client:
+
+        res = await client.outgoing.mms.send_async(request={
+            "recipients": {
+                "nr": "+48999999999",
+                "cid": "my-id-1113",
+            },
+            "subject": "To jest temat wiadomości",
+            "message": "To jest treść wiadomości",
+            "attachments": "<file_body in base64 format>",
+            "date_": None,
+        })
+
+        # Handle response
+        print(res)
 
 asyncio.run(main())
 ```
@@ -243,39 +286,37 @@ Some of the endpoints in this SDK support retries. If you use the SDK without an
 
 To change the default retry strategy for a single API call, simply provide a `RetryConfig` object to the call:
 ```python
-from client.utils import BackoffStrategy, RetryConfig
 from gsmservice_gateway import Client
-import os
+from gsmservice_gateway.utils import BackoffStrategy, RetryConfig
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.accounts.get(,
-    RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.accounts.get(,
+        RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
+
+    # Handle response
+    print(res)
 
 ```
 
 If you'd like to override the default retry strategy for all operations that support retries, you can use the `retry_config` optional parameter when initializing the SDK:
 ```python
-from client.utils import BackoffStrategy, RetryConfig
 from gsmservice_gateway import Client
-import os
+from gsmservice_gateway.utils import BackoffStrategy, RetryConfig
 
-s = Client(
+
+with Client(
     retry_config=RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False),
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-res = s.accounts.get()
+    res = client.accounts.get()
 
-if res is not None:
-    # handle response
-    pass
+    # Handle response
+    print(res)
 
 ```
 <!-- End Retries [retries] -->
@@ -296,34 +337,37 @@ By default, an API error will raise a models.SDKError exception, which has the f
 
 When custom error responses are specified for an operation, the SDK may also raise their associated exceptions. You can refer to respective *Errors* tables in SDK docs for more details on possible exception types for each operation. For example, the `get_async` method may raise the following exceptions:
 
-| Error Type                | Status Code               | Content Type              |
-| ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 401, 403, 4XX, 5XX        | application/problem+json  |
+| Error Type                | Status Code   | Content Type             |
+| ------------------------- | ------------- | ------------------------ |
+| models.ErrorResponseError | 401, 403, 4XX | application/problem+json |
+| models.ErrorResponseError | 5XX           | application/problem+json |
 
 ### Example
 
 ```python
 from gsmservice_gateway import Client, models
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = None
-try:
-    res = s.accounts.get()
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+    res = None
+    try:
 
-    if res is not None:
-        # handle response
-        pass
+        res = client.accounts.get()
 
-except models.ErrorResponseError as e:
-    # handle e.data: models.ErrorResponseErrorData
-    raise(e)
-except models.SDKError as e:
-    # handle exception
-    raise(e)
+        # Handle response
+        print(res)
+
+    except models.ErrorResponseError as e:
+        # handle e.data: models.ErrorResponseErrorData
+        raise(e)
+    except models.ErrorResponseError as e:
+        # handle e.data: models.ErrorResponseErrorData
+        raise(e)
+    except models.SDKError as e:
+        # handle exception
+        raise(e)
 ```
 <!-- End Error Handling [errors] -->
 
@@ -334,48 +378,45 @@ except models.SDKError as e:
 
 You can override the default server globally by passing a server name to the `server: str` optional parameter when initializing the SDK client instance. The selected server will then be used as the default on the operations that use it. This table lists the names associated with the available servers:
 
-| Name | Server | Variables |
-| ----- | ------ | --------- |
-| `prod` | `https://api.gsmservice.pl/rest` | None |
-| `sandbox` | `https://api.gsmservice.pl/rest-sandbox` | None |
+| Name      | Server                                  | Description           |
+| --------- | --------------------------------------- | --------------------- |
+| `prod`    | `https://api.szybkisms.pl/rest`         | Production system     |
+| `sandbox` | `https://api.szybkisms.pl/rest-sandbox` | Test system (SANDBOX) |
 
 #### Example
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
+
+with Client(
     server="sandbox",
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-res = s.accounts.get()
+    res = client.accounts.get()
 
-if res is not None:
-    # handle response
-    pass
+    # Handle response
+    print(res)
 
 ```
-
 
 ### Override Server URL Per-Client
 
 The default server can also be overridden globally by passing a URL to the `server_url: str` optional parameter when initializing the SDK client instance. For example:
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    server_url="https://api.gsmservice.pl/rest",
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.accounts.get()
+with Client(
+    server_url="https://api.szybkisms.pl/rest",
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.accounts.get()
+
+    # Handle response
+    print(res)
 
 ```
 <!-- End Server Selection [server] -->
@@ -468,27 +509,53 @@ s = Client(async_client=CustomClient(httpx.AsyncClient()))
 
 This SDK supports the following security scheme globally:
 
-| Name                 | Type                 | Scheme               | Environment Variable |
-| -------------------- | -------------------- | -------------------- | -------------------- |
-| `bearer`             | http                 | HTTP Bearer          | `GATEWAY_API_BEARER` |
+| Name     | Type | Scheme      | Environment Variable |
+| -------- | ---- | ----------- | -------------------- |
+| `bearer` | http | HTTP Bearer | `GATEWAY_API_BEARER` |
 
 To authenticate with the API the `bearer` parameter must be set when initializing the SDK client instance. For example:
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.accounts.get()
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.accounts.get()
+
+    # Handle response
+    print(res)
 
 ```
 <!-- End Authentication [security] -->
+
+<!-- Start Resource Management [resource-management] -->
+## Resource Management
+
+The `Client` class implements the context manager protocol and registers a finalizer function to close the underlying sync and async HTTPX clients it uses under the hood. This will close HTTP connections, release memory and free up other resources held by the SDK. In short-lived Python programs and notebooks that make a few SDK method calls, resource management may not be a concern. However, in longer-lived programs, it is beneficial to create a single SDK instance via a [context manager][context-manager] and reuse it across the application.
+
+[context-manager]: https://docs.python.org/3/reference/datamodel.html#context-managers
+
+```python
+from gsmservice_gateway import Client
+def main():
+
+    with Client(
+        bearer="<YOUR API ACCESS TOKEN>",
+    ) as client:
+        # Rest of application here...
+
+
+# Or when using async:
+async def amain():
+
+    async with Client(
+        bearer="<YOUR API ACCESS TOKEN>",
+    ) as client:
+        # Rest of application here...
+```
+<!-- End Resource Management [resource-management] -->
 
 <!-- Start Debugging [debug] -->
 ## Debugging

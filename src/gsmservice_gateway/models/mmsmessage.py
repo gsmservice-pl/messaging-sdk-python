@@ -13,24 +13,29 @@ from gsmservice_gateway.types import (
 import pydantic
 from pydantic import model_serializer
 from typing import List, Optional, Union
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
-RecipientsTypedDict = Union[
-    PhoneNumberWithCidTypedDict, str, List[str], List[PhoneNumberWithCidTypedDict]
-]
+RecipientsTypedDict = TypeAliasType(
+    "RecipientsTypedDict",
+    Union[
+        PhoneNumberWithCidTypedDict, str, List[str], List[PhoneNumberWithCidTypedDict]
+    ],
+)
 r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
 
 
-Recipients = Union[PhoneNumberWithCid, str, List[str], List[PhoneNumberWithCid]]
+Recipients = TypeAliasType(
+    "Recipients", Union[PhoneNumberWithCid, str, List[str], List[PhoneNumberWithCid]]
+)
 r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
 
 
-AttachmentsTypedDict = Union[str, List[str]]
+AttachmentsTypedDict = TypeAliasType("AttachmentsTypedDict", Union[str, List[str]])
 r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
 
 
-Attachments = Union[str, List[str]]
+Attachments = TypeAliasType("Attachments", Union[str, List[str]])
 r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
 
 
@@ -39,10 +44,10 @@ class MmsMessageTypedDict(TypedDict):
 
     recipients: RecipientsTypedDict
     r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
-    message: Nullable[str]
-    r"""MMS message content"""
     subject: NotRequired[Nullable[str]]
     r"""MMS message subject"""
+    message: NotRequired[Nullable[str]]
+    r"""MMS message content"""
     attachments: NotRequired[AttachmentsTypedDict]
     r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
     date_: NotRequired[Nullable[datetime]]
@@ -55,11 +60,11 @@ class MmsMessage(BaseModel):
     recipients: Recipients
     r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
 
-    message: Nullable[str]
-    r"""MMS message content"""
-
     subject: OptionalNullable[str] = UNSET
     r"""MMS message subject"""
+
+    message: OptionalNullable[str] = UNSET
+    r"""MMS message content"""
 
     attachments: Optional[Attachments] = None
     r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
@@ -69,8 +74,8 @@ class MmsMessage(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = ["subject", "attachments", "date"]
-        nullable_fields = ["message", "subject", "date"]
+        optional_fields = ["subject", "message", "attachments", "date"]
+        nullable_fields = ["subject", "message", "date"]
         null_default_fields = ["date"]
 
         serialized = handler(self)

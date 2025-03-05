@@ -5,7 +5,7 @@ from gsmservice_gateway import models, utils
 from gsmservice_gateway._hooks import HookContext
 from gsmservice_gateway.types import BaseModel, OptionalNullable, UNSET
 from gsmservice_gateway.utils import get_security_from_env
-from typing import Any, List, Optional, Union, cast
+from typing import Any, List, Mapping, Optional, Union, cast
 
 
 class Mms(BaseSDK):
@@ -18,6 +18,7 @@ class Mms(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetMmsPriceResponse:
         r"""Check the price of MMS Messages
 
@@ -32,6 +33,7 @@ class Mms(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -40,12 +42,14 @@ class Mms(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         if not isinstance(request, BaseModel):
             request = utils.unmarshal(request, models.GetMmsPriceRequestBody)
         request = cast(models.GetMmsPriceRequestBody, request)
 
-        req = self.build_request(
+        req = self._build_request(
             method="POST",
             path="/messages/mms/price",
             base_url=base_url,
@@ -56,6 +60,7 @@ class Mms(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             get_serialized_body=lambda: utils.serialize_request_body(
                 request, False, False, "json", models.GetMmsPriceRequestBody
@@ -77,6 +82,7 @@ class Mms(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="getMmsPrice",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -88,17 +94,24 @@ class Mms(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.GetMmsPriceResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Price]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res, ["400", "401", "4XX", "5XX"], "application/problem+json"
+            http_res, ["400", "401", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
@@ -118,6 +131,7 @@ class Mms(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.GetMmsPriceResponse:
         r"""Check the price of MMS Messages
 
@@ -132,6 +146,7 @@ class Mms(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -140,12 +155,14 @@ class Mms(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         if not isinstance(request, BaseModel):
             request = utils.unmarshal(request, models.GetMmsPriceRequestBody)
         request = cast(models.GetMmsPriceRequestBody, request)
 
-        req = self.build_request_async(
+        req = self._build_request_async(
             method="POST",
             path="/messages/mms/price",
             base_url=base_url,
@@ -156,6 +173,7 @@ class Mms(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             get_serialized_body=lambda: utils.serialize_request_body(
                 request, False, False, "json", models.GetMmsPriceRequestBody
@@ -177,6 +195,7 @@ class Mms(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="getMmsPrice",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -188,17 +207,24 @@ class Mms(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.GetMmsPriceResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Price]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res, ["400", "401", "4XX", "5XX"], "application/problem+json"
+            http_res, ["400", "401", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)
@@ -216,6 +242,7 @@ class Mms(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.SendMmsResponse:
         r"""Send MMS Messages
 
@@ -229,6 +256,7 @@ class Mms(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -237,12 +265,14 @@ class Mms(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         if not isinstance(request, BaseModel):
             request = utils.unmarshal(request, models.SendMmsRequestBody)
         request = cast(models.SendMmsRequestBody, request)
 
-        req = self.build_request(
+        req = self._build_request(
             method="POST",
             path="/messages/mms",
             base_url=base_url,
@@ -253,6 +283,7 @@ class Mms(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             get_serialized_body=lambda: utils.serialize_request_body(
                 request, False, False, "json", models.SendMmsRequestBody
@@ -274,6 +305,7 @@ class Mms(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="sendMms",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -285,17 +317,24 @@ class Mms(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.SendMmsResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Message]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res, ["400", "401", "403", "4XX", "5XX"], "application/problem+json"
+            http_res, ["400", "401", "403", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = utils.stream_to_text(http_res)
@@ -313,6 +352,7 @@ class Mms(BaseSDK):
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
     ) -> models.SendMmsResponse:
         r"""Send MMS Messages
 
@@ -326,6 +366,7 @@ class Mms(BaseSDK):
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
         """
         base_url = None
         url_variables = None
@@ -334,12 +375,14 @@ class Mms(BaseSDK):
 
         if server_url is not None:
             base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
 
         if not isinstance(request, BaseModel):
             request = utils.unmarshal(request, models.SendMmsRequestBody)
         request = cast(models.SendMmsRequestBody, request)
 
-        req = self.build_request_async(
+        req = self._build_request_async(
             method="POST",
             path="/messages/mms",
             base_url=base_url,
@@ -350,6 +393,7 @@ class Mms(BaseSDK):
             request_has_query_params=True,
             user_agent_header="user-agent",
             accept_header_value="application/json",
+            http_headers=http_headers,
             security=self.sdk_configuration.security,
             get_serialized_body=lambda: utils.serialize_request_body(
                 request, False, False, "json", models.SendMmsRequestBody
@@ -371,6 +415,7 @@ class Mms(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                base_url=base_url or "",
                 operation_id="sendMms",
                 oauth2_scopes=[],
                 security_source=get_security_from_env(
@@ -382,17 +427,24 @@ class Mms(BaseSDK):
             retry_config=retry_config,
         )
 
-        data: Any = None
+        response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.SendMmsResponse(
                 result=utils.unmarshal_json(http_res.text, List[models.Message]),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
-            http_res, ["400", "401", "403", "4XX", "5XX"], "application/problem+json"
+            http_res, ["400", "401", "403", "4XX"], "application/problem+json"
         ):
-            data = utils.unmarshal_json(http_res.text, models.ErrorResponseErrorData)
-            raise models.ErrorResponseError(data=data)
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = utils.unmarshal_json(
+                http_res.text, models.ErrorResponseErrorData
+            )
+            raise models.ErrorResponseError(data=response_data)
 
         content_type = http_res.headers.get("Content-Type")
         http_res_text = await utils.stream_to_text_async(http_res)

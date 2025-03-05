@@ -15,18 +15,22 @@ import pydantic
 from pydantic import model_serializer
 from pydantic.functional_validators import PlainValidator
 from typing import List, Optional, Union
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
-SmsMessageRecipientsTypedDict = Union[
-    PhoneNumberWithCidTypedDict, str, List[str], List[PhoneNumberWithCidTypedDict]
-]
+SmsMessageRecipientsTypedDict = TypeAliasType(
+    "SmsMessageRecipientsTypedDict",
+    Union[
+        PhoneNumberWithCidTypedDict, str, List[str], List[PhoneNumberWithCidTypedDict]
+    ],
+)
 r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
 
 
-SmsMessageRecipients = Union[
-    PhoneNumberWithCid, str, List[str], List[PhoneNumberWithCid]
-]
+SmsMessageRecipients = TypeAliasType(
+    "SmsMessageRecipients",
+    Union[PhoneNumberWithCid, str, List[str], List[PhoneNumberWithCid]],
+)
 r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
 
 

@@ -5,14 +5,19 @@ from .mmsmessage import MmsMessage, MmsMessageTypedDict
 from .price import Price, PriceTypedDict
 from gsmservice_gateway.types import BaseModel
 from typing import Dict, List, Union
-from typing_extensions import TypedDict
+from typing_extensions import TypeAliasType, TypedDict
 
 
-GetMmsPriceRequestBodyTypedDict = Union[MmsMessageTypedDict, List[MmsMessageTypedDict]]
+GetMmsPriceRequestBodyTypedDict = TypeAliasType(
+    "GetMmsPriceRequestBodyTypedDict",
+    Union[MmsMessageTypedDict, List[MmsMessageTypedDict]],
+)
 r"""To check the price of a single message or messages with the same content to multiple recipients, pass a single `MmsMessage` object with the properties of this message. To check the price of multiple messages with different content at the same time, pass a `List[MmsMessage]` with the properties of each message."""
 
 
-GetMmsPriceRequestBody = Union[MmsMessage, List[MmsMessage]]
+GetMmsPriceRequestBody = TypeAliasType(
+    "GetMmsPriceRequestBody", Union[MmsMessage, List[MmsMessage]]
+)
 r"""To check the price of a single message or messages with the same content to multiple recipients, pass a single `MmsMessage` object with the properties of this message. To check the price of multiple messages with different content at the same time, pass a `List[MmsMessage]` with the properties of each message."""
 
 

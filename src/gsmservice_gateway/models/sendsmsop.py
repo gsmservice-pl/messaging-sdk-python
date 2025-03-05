@@ -5,14 +5,18 @@ from .message import Message, MessageTypedDict
 from .smsmessage import SmsMessage, SmsMessageTypedDict
 from gsmservice_gateway.types import BaseModel
 from typing import Dict, List, Union
-from typing_extensions import TypedDict
+from typing_extensions import TypeAliasType, TypedDict
 
 
-SendSmsRequestBodyTypedDict = Union[SmsMessageTypedDict, List[SmsMessageTypedDict]]
+SendSmsRequestBodyTypedDict = TypeAliasType(
+    "SendSmsRequestBodyTypedDict", Union[SmsMessageTypedDict, List[SmsMessageTypedDict]]
+)
 r"""To send a single SMS or messages with the same content to multiple recipients, please pass a single `SmsMessage` object with the properties of this message. To send multiple messages with different content at the same time, please pass `List[SmsMessage]` with the properties of each message."""
 
 
-SendSmsRequestBody = Union[SmsMessage, List[SmsMessage]]
+SendSmsRequestBody = TypeAliasType(
+    "SendSmsRequestBody", Union[SmsMessage, List[SmsMessage]]
+)
 r"""To send a single SMS or messages with the same content to multiple recipients, please pass a single `SmsMessage` object with the properties of this message. To send multiple messages with different content at the same time, please pass `List[SmsMessage]` with the properties of each message."""
 
 

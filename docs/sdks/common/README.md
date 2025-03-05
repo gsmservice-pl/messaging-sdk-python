@@ -18,13 +18,13 @@ As a successful result a `PingResponse` object will be returned.
 ```python
 from gsmservice_gateway import Client
 
-s = Client()
 
-res = s.common.ping()
+with Client() as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.common.ping()
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -42,4 +42,5 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 4XX, 503, 5XX        | application/problem+json  |
+| models.ErrorResponseError | 400, 4XX                  | application/problem+json  |
+| models.ErrorResponseError | 503, 5XX                  | application/problem+json  |

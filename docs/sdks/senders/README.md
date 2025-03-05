@@ -20,17 +20,16 @@ As a successful result a `List[Sender]` containing `Sender` objects will be retu
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.senders.list()
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.senders.list()
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -48,7 +47,8 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX, 5XX   | application/problem+json  |
+| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## add
 
@@ -60,20 +60,19 @@ As a successful result a `AddSenderResponse` object will be returned with a `res
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.senders.add(request={
-    "sender": "Bramka SMS",
-    "description": "This is our company name. It contains our registered trademark.",
-})
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.senders.add(request={
+        "sender": "Bramka SMS",
+        "description": "This is our company name. It contains our registered trademark.",
+    })
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -92,7 +91,8 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX, 5XX   | application/problem+json  |
+| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## delete
 
@@ -104,17 +104,16 @@ As a successful response a `DeleteSenderResponse` object will be returned with n
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.senders.delete(sender="Podpis")
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.senders.delete(sender="Podpis")
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -131,9 +130,10 @@ if res is not None:
 
 ### Errors
 
-| Error Type                   | Status Code                  | Content Type                 |
-| ---------------------------- | ---------------------------- | ---------------------------- |
-| models.ErrorResponseError    | 400, 401, 403, 404, 4XX, 5XX | application/problem+json     |
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## set_default
 
@@ -145,17 +145,16 @@ As a successful response a `SetDefaultSenderResponse` object will be returned wi
 
 ```python
 from gsmservice_gateway import Client
-import os
 
-s = Client(
-    bearer=os.getenv("GATEWAY_API_BEARER", ""),
-)
 
-res = s.senders.set_default(sender="Podpis")
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
 
-if res is not None:
-    # handle response
-    pass
+    res = client.senders.set_default(sender="Podpis")
+
+    # Handle response
+    print(res)
 
 ```
 
@@ -174,5 +173,6 @@ if res is not None:
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX, 5XX   | application/problem+json  |
 | models.ErrorResponseError | 404                       | application/json          |
+| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 5XX                       | application/problem+json  |

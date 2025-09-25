@@ -18,6 +18,7 @@ As a successful result a `List[Sender]` containing `Sender` objects will be retu
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="listSenders" method="get" path="/senders" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -58,6 +59,7 @@ As a successful result a `AddSenderResponse` object will be returned with a `res
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="addSender" method="post" path="/senders" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -102,6 +104,7 @@ As a successful response a `DeleteSenderResponse` object will be returned with n
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="deleteSender" method="delete" path="/senders/{sender}" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -143,6 +146,7 @@ As a successful response a `SetDefaultSenderResponse` object will be returned wi
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="setDefaultSender" method="patch" path="/senders/{sender}" -->
 ```python
 from gsmservice_gateway import Client
 

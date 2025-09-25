@@ -17,6 +17,7 @@ As a successful result a `GetMessagesResponse` object will be returned containin
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="getMessages" method="get" path="/messages/{ids}" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -62,6 +63,7 @@ As a successful result a `CancelMessagesResponse` object will be returned, with 
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="cancelMessages" method="delete" path="/messages/{ids}" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -105,6 +107,7 @@ As a successful result a `ListMessagesResponse` object will be returned containi
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="listMessages" method="get" path="/messages" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -113,7 +116,7 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.list()
+    res = client.outgoing.list(page=1, limit=10)
 
     # Handle response
     print(res)

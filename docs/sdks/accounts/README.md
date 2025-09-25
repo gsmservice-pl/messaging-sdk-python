@@ -16,6 +16,7 @@ As a successful result a details of current account you are logged in using an A
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="getAccountDetails" method="get" path="/account" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -58,6 +59,7 @@ As a successful result the details of subaccount with provided login will be ret
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="getSubaccountDetails" method="get" path="/account/{user_login}" -->
 ```python
 from gsmservice_gateway import Client
 

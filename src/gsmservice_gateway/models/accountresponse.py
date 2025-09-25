@@ -13,7 +13,10 @@ from typing import Literal, Optional
 from typing_extensions import NotRequired, TypedDict
 
 
-AccountType = Literal["PRE-PAID", "POST-PAID"]
+AccountType = Literal[
+    "PRE-PAID",
+    "POST-PAID",
+]
 r"""Account type"""
 
 
@@ -84,7 +87,7 @@ class AccountResponse(BaseModel):
 
         m = {}
 
-        for n, f in self.model_fields.items():
+        for n, f in type(self).model_fields.items():
             k = f.alias or n
             val = serialized.get(k)
             serialized.pop(k, None)

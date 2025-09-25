@@ -7,15 +7,19 @@ from .utils.logger import Logger, get_default_logger
 from .utils.retries import RetryConfig
 from gsmservice_gateway import models, utils
 from gsmservice_gateway._hooks import SDKHooks
-from gsmservice_gateway.accounts import Accounts
-from gsmservice_gateway.common import Common
-from gsmservice_gateway.incoming import Incoming
-from gsmservice_gateway.outgoing import Outgoing
-from gsmservice_gateway.senders import Senders
 from gsmservice_gateway.types import OptionalNullable, UNSET
 import httpx
-from typing import Any, Callable, Dict, Optional, Union, cast
+import importlib
+import sys
+from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Union, cast
 import weakref
+
+if TYPE_CHECKING:
+    from gsmservice_gateway.accounts import Accounts
+    from gsmservice_gateway.common import Common
+    from gsmservice_gateway.incoming import Incoming
+    from gsmservice_gateway.outgoing import Outgoing
+    from gsmservice_gateway.senders import Senders
 
 
 class Client(BaseSDK):
@@ -48,11 +52,18 @@ class Client(BaseSDK):
     https://szybkisms.pl - SzybkiSMS.pl
     """
 
-    accounts: Accounts
-    outgoing: Outgoing
-    incoming: Incoming
-    common: Common
-    senders: Senders
+    accounts: "Accounts"
+    outgoing: "Outgoing"
+    incoming: "Incoming"
+    common: "Common"
+    senders: "Senders"
+    _sub_sdk_map = {
+        "accounts": ("gsmservice_gateway.accounts", "Accounts"),
+        "outgoing": ("gsmservice_gateway.outgoing", "Outgoing"),
+        "incoming": ("gsmservice_gateway.incoming", "Incoming"),
+        "common": ("gsmservice_gateway.common", "Common"),
+        "senders": ("gsmservice_gateway.senders", "Senders"),
+    }
 
     def __init__(
         self,
@@ -79,7 +90,7 @@ class Client(BaseSDK):
         """
         client_supplied = True
         if client is None:
-            client = httpx.Client()
+            client = httpx.Client(follow_redirects=True)
             client_supplied = False
 
         assert issubclass(
@@ -88,7 +99,7 @@ class Client(BaseSDK):
 
         async_client_supplied = True
         if async_client is None:
-            async_client = httpx.AsyncClient()
+            async_client = httpx.AsyncClient(follow_redirects=True)
             async_client_supplied = False
 
         if debug_logger is None:
@@ -123,9 +134,13 @@ class Client(BaseSDK):
                 timeout_ms=timeout_ms,
                 debug_logger=debug_logger,
             ),
+            parent_ref=self,
         )
 
         hooks = SDKHooks()
+
+        # pylint: disable=protected-access
+        self.sdk_configuration.__dict__["_hooks"] = hooks
 
         current_server_url, *_ = self.sdk_configuration.get_server_details()
         server_url, self.sdk_configuration.client = hooks.sdk_init(
@@ -133,9 +148,6 @@ class Client(BaseSDK):
         )
         if current_server_url != server_url:
             self.sdk_configuration.server_url = server_url
-
-        # pylint: disable=protected-access
-        self.sdk_configuration.__dict__["_hooks"] = hooks
 
         weakref.finalize(
             self,
@@ -147,14 +159,43 @@ class Client(BaseSDK):
             self.sdk_configuration.async_client_supplied,
         )
 
-        self._init_sdks()
+    def dynamic_import(self, modname, retries=3):
+        for attempt in range(retries):
+            try:
+                return importlib.import_module(modname)
+            except KeyError:
+                # Clear any half-initialized module and retry
+                sys.modules.pop(modname, None)
+                if attempt == retries - 1:
+                    break
+        raise KeyError(f"Failed to import module '{modname}' after {retries} attempts")
 
-    def _init_sdks(self):
-        self.accounts = Accounts(self.sdk_configuration)
-        self.outgoing = Outgoing(self.sdk_configuration)
-        self.incoming = Incoming(self.sdk_configuration)
-        self.common = Common(self.sdk_configuration)
-        self.senders = Senders(self.sdk_configuration)
+    def __getattr__(self, name: str):
+        if name in self._sub_sdk_map:
+            module_path, class_name = self._sub_sdk_map[name]
+            try:
+                module = self.dynamic_import(module_path)
+                klass = getattr(module, class_name)
+                instance = klass(self.sdk_configuration, parent_ref=self)
+                setattr(self, name, instance)
+                return instance
+            except ImportError as e:
+                raise AttributeError(
+                    f"Failed to import module {module_path} for attribute {name}: {e}"
+                ) from e
+            except AttributeError as e:
+                raise AttributeError(
+                    f"Failed to find class {class_name} in module {module_path} for attribute {name}: {e}"
+                ) from e
+
+        raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'"
+        )
+
+    def __dir__(self):
+        default_attrs = list(super().__dir__())
+        lazy_attrs = list(self._sub_sdk_map.keys())
+        return sorted(list(set(default_attrs + lazy_attrs)))
 
     def __enter__(self):
         return self

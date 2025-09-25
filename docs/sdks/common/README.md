@@ -15,6 +15,7 @@ As a successful result a `PingResponse` object will be returned.
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="ping" method="get" path="/ping" -->
 ```python
 from gsmservice_gateway import Client
 

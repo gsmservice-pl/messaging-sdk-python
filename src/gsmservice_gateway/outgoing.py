@@ -8,6 +8,7 @@ from gsmservice_gateway.mms import Mms
 from gsmservice_gateway.sms import Sms
 from gsmservice_gateway.types import OptionalNullable, UNSET
 from gsmservice_gateway.utils import get_security_from_env
+from gsmservice_gateway.utils.unmarshal_json_response import unmarshal_json_response
 from typing import Any, List, Mapping, Optional
 
 
@@ -15,14 +16,16 @@ class Outgoing(BaseSDK):
     mms: Mms
     sms: Sms
 
-    def __init__(self, sdk_config: SDKConfiguration) -> None:
-        BaseSDK.__init__(self, sdk_config)
+    def __init__(
+        self, sdk_config: SDKConfiguration, parent_ref: Optional[object] = None
+    ) -> None:
+        BaseSDK.__init__(self, sdk_config, parent_ref=parent_ref)
         self.sdk_configuration = sdk_config
         self._init_sdks()
 
     def _init_sdks(self):
-        self.mms = Mms(self.sdk_configuration)
-        self.sms = Sms(self.sdk_configuration)
+        self.mms = Mms(self.sdk_configuration, parent_ref=self.parent_ref)
+        self.sms = Sms(self.sdk_configuration, parent_ref=self.parent_ref)
 
     def get_by_ids(
         self,
@@ -89,6 +92,7 @@ class Outgoing(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="getMessages",
                 oauth2_scopes=[],
@@ -104,30 +108,23 @@ class Outgoing(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.GetMessagesResponse(
-                result=utils.unmarshal_json(http_res.text, List[models.Message]),
+                result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
             http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, "5XX", "application/problem+json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
 
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise models.SDKError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
+        raise models.SDKError("Unexpected response received", http_res)
 
     async def get_by_ids_async(
         self,
@@ -194,6 +191,7 @@ class Outgoing(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="getMessages",
                 oauth2_scopes=[],
@@ -209,30 +207,23 @@ class Outgoing(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.GetMessagesResponse(
-                result=utils.unmarshal_json(http_res.text, List[models.Message]),
+                result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
             http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, "5XX", "application/problem+json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
 
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise models.SDKError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
+        raise models.SDKError("Unexpected response received", http_res)
 
     def cancel_scheduled(
         self,
@@ -301,6 +292,7 @@ class Outgoing(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="cancelMessages",
                 oauth2_scopes=[],
@@ -316,32 +308,23 @@ class Outgoing(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.CancelMessagesResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, List[models.CancelledMessage]
-                ),
+                result=unmarshal_json_response(List[models.CancelledMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
             http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, "5XX", "application/problem+json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
 
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise models.SDKError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
+        raise models.SDKError("Unexpected response received", http_res)
 
     async def cancel_scheduled_async(
         self,
@@ -410,6 +393,7 @@ class Outgoing(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="cancelMessages",
                 oauth2_scopes=[],
@@ -425,32 +409,23 @@ class Outgoing(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.CancelMessagesResponse(
-                result=utils.unmarshal_json(
-                    http_res.text, List[models.CancelledMessage]
-                ),
+                result=unmarshal_json_response(List[models.CancelledMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
             http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, "5XX", "application/problem+json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
 
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise models.SDKError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
+        raise models.SDKError("Unexpected response received", http_res)
 
     def list(
         self,
@@ -520,6 +495,7 @@ class Outgoing(BaseSDK):
 
         http_res = self.do_request(
             hook_ctx=HookContext(
+                config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="listMessages",
                 oauth2_scopes=[],
@@ -535,30 +511,23 @@ class Outgoing(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.ListMessagesResponse(
-                result=utils.unmarshal_json(http_res.text, List[models.Message]),
+                result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
             http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, "5XX", "application/problem+json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
 
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = utils.stream_to_text(http_res)
-        raise models.SDKError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
+        raise models.SDKError("Unexpected response received", http_res)
 
     async def list_async(
         self,
@@ -628,6 +597,7 @@ class Outgoing(BaseSDK):
 
         http_res = await self.do_request_async(
             hook_ctx=HookContext(
+                config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="listMessages",
                 oauth2_scopes=[],
@@ -643,27 +613,20 @@ class Outgoing(BaseSDK):
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
             return models.ListMessagesResponse(
-                result=utils.unmarshal_json(http_res.text, List[models.Message]),
+                result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
         if utils.match_response(
             http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, "5XX", "application/problem+json"):
-            response_data = utils.unmarshal_json(
-                http_res.text, models.ErrorResponseErrorData
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
             )
-            raise models.ErrorResponseError(data=response_data)
+            raise models.ErrorResponseError(response_data, http_res)
 
-        content_type = http_res.headers.get("Content-Type")
-        http_res_text = await utils.stream_to_text_async(http_res)
-        raise models.SDKError(
-            f"Unexpected response received (code: {http_res.status_code}, type: {content_type})",
-            http_res.status_code,
-            http_res_text,
-            http_res,
-        )
+        raise models.SDKError("Unexpected response received", http_res)

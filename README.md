@@ -43,7 +43,15 @@ Also you can refer to the [REST API documentation](https://api.szybkisms.pl/rest
 >
 > Once a Python version reaches its [official end of life date](https://devguide.python.org/versions/), a 3-month grace period is provided for users to upgrade. Following this grace period, the minimum python version supported in the SDK will be updated.
 
-The SDK can be installed with either *pip* or *poetry* package managers.
+The SDK can be installed with *uv*, *pip*, or *poetry* package managers.
+
+### uv
+
+*uv* is a fast Python package installer and resolver, designed as a drop-in replacement for pip and pip-tools. It's recommended for its speed and modern Python tooling capabilities.
+
+```bash
+uv add gsmservice-gateway
+```
 
 ### PIP
 
@@ -119,19 +127,15 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.sms.send(request=[
-        {
-            "recipients": [
-                "+48999999999",
-            ],
-            "message": "To jest treść wiadomości",
-            "sender": "Bramka SMS",
-            "type": 1,
-            "unicode": False,
-            "flash": False,
-            "date_": None,
-        },
-    ])
+    res = client.outgoing.sms.send(request={
+        "recipients": "+48999999999",
+        "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
 
     # Handle response
     print(res)
@@ -139,7 +143,8 @@ with Client(
 
 </br>
 
-The same SDK client can also be used to make asychronous requests by importing asyncio.
+The same SDK client can also be used to make asynchronous requests by importing asyncio.
+
 ```python
 # Asynchronous Example
 import asyncio
@@ -151,17 +156,15 @@ async def main():
         bearer="<YOUR API ACCESS TOKEN>",
     ) as client:
 
-        res = await client.outgoing.sms.send_async(request=[
-            {
-                "recipients": "+48999999999",
-                "message": "To jest treść wiadomości",
-                "sender": "Bramka SMS",
-                "type": 1,
-                "unicode": False,
-                "flash": False,
-                "date_": None,
-            },
-        ])
+        res = await client.outgoing.sms.send_async(request={
+            "recipients": "+48999999999",
+            "message": "This is SMS message content.",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        })
 
         # Handle response
         print(res)
@@ -182,19 +185,13 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.mms.send(request=[
-        {
-            "recipients": [
-                "+48999999999",
-            ],
-            "subject": "To jest temat wiadomości",
-            "message": "To jest treść wiadomości",
-            "attachments": [
-                "<file_body in base64 format>",
-            ],
-            "date_": None,
-        },
-    ])
+    res = client.outgoing.mms.send(request={
+        "recipients": "+48999999999",
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content.",
+        "attachments": "<file body in base64 format>",
+        "date_": None,
+    })
 
     # Handle response
     print(res)
@@ -202,7 +199,8 @@ with Client(
 
 </br>
 
-The same SDK client can also be used to make asychronous requests by importing asyncio.
+The same SDK client can also be used to make asynchronous requests by importing asyncio.
+
 ```python
 # Asynchronous Example
 import asyncio
@@ -215,13 +213,10 @@ async def main():
     ) as client:
 
         res = await client.outgoing.mms.send_async(request={
-            "recipients": {
-                "nr": "+48999999999",
-                "cid": "my-id-1113",
-            },
-            "subject": "To jest temat wiadomości",
-            "message": "To jest treść wiadomości",
-            "attachments": "<file_body in base64 format>",
+            "recipients": "+48999999999",
+            "subject": "This is a subject of the message",
+            "message": "This is MMS message content.",
+            "attachments": "<file body in base64 format>",
             "date_": None,
         })
 
@@ -324,26 +319,18 @@ with Client(
 <!-- Start Error Handling [errors] -->
 ## Error Handling
 
-Handling errors in this SDK should largely match your expectations. All operations return a response object or raise an exception.
+[`ClientError`](./src/gsmservice_gateway/models/clienterror.py) is the base class for all HTTP error responses. It has the following properties:
 
-By default, an API error will raise a models.SDKError exception, which has the following properties:
-
-| Property        | Type             | Description           |
-|-----------------|------------------|-----------------------|
-| `.status_code`  | *int*            | The HTTP status code  |
-| `.message`      | *str*            | The error message     |
-| `.raw_response` | *httpx.Response* | The raw HTTP response |
-| `.body`         | *str*            | The response content  |
-
-When custom error responses are specified for an operation, the SDK may also raise their associated exceptions. You can refer to respective *Errors* tables in SDK docs for more details on possible exception types for each operation. For example, the `get_async` method may raise the following exceptions:
-
-| Error Type                | Status Code   | Content Type             |
-| ------------------------- | ------------- | ------------------------ |
-| models.ErrorResponseError | 401, 403, 4XX | application/problem+json |
-| models.ErrorResponseError | 5XX           | application/problem+json |
+| Property           | Type             | Description                                                                             |
+| ------------------ | ---------------- | --------------------------------------------------------------------------------------- |
+| `err.message`      | `str`            | Error message                                                                           |
+| `err.status_code`  | `int`            | HTTP response status code eg `404`                                                      |
+| `err.headers`      | `httpx.Headers`  | HTTP response headers                                                                   |
+| `err.body`         | `str`            | HTTP body. Can be empty string if no body is returned.                                  |
+| `err.raw_response` | `httpx.Response` | Raw HTTP response                                                                       |
+| `err.data`         |                  | Optional. Some errors may contain structured data. [See Error Classes](#error-classes). |
 
 ### Example
-
 ```python
 from gsmservice_gateway import Client, models
 
@@ -359,16 +346,43 @@ with Client(
         # Handle response
         print(res)
 
-    except models.ErrorResponseError as e:
-        # handle e.data: models.ErrorResponseErrorData
-        raise(e)
-    except models.ErrorResponseError as e:
-        # handle e.data: models.ErrorResponseErrorData
-        raise(e)
-    except models.SDKError as e:
-        # handle exception
-        raise(e)
+
+    except models.ClientError as e:
+        # The base class for HTTP error responses
+        print(e.message)
+        print(e.status_code)
+        print(e.body)
+        print(e.headers)
+        print(e.raw_response)
+
+        # Depending on the method different errors may be thrown
+        if isinstance(e, models.ErrorResponseError):
+            print(e.data.type)  # Optional[str]
+            print(e.data.status)  # Optional[int]
+            print(e.data.title)  # Optional[str]
+            print(e.data.detail)  # Optional[str]
+            print(e.data.code)  # Optional[str]
 ```
+
+### Error Classes
+**Primary errors:**
+* [`ClientError`](./src/gsmservice_gateway/models/clienterror.py): The base class for HTTP error responses.
+  * [`ErrorResponseError`](./src/gsmservice_gateway/models/errorresponseerror.py): An object that complies with RFC 9457 containing information about a request error.
+
+<details><summary>Less common errors (5)</summary>
+
+<br />
+
+**Network errors:**
+* [`httpx.RequestError`](https://www.python-httpx.org/exceptions/#httpx.RequestError): Base class for request errors.
+    * [`httpx.ConnectError`](https://www.python-httpx.org/exceptions/#httpx.ConnectError): HTTP client was unable to make a request to a server.
+    * [`httpx.TimeoutException`](https://www.python-httpx.org/exceptions/#httpx.TimeoutException): HTTP request timed out.
+
+
+**Inherit from [`ClientError`](./src/gsmservice_gateway/models/clienterror.py)**:
+* [`ResponseValidationError`](./src/gsmservice_gateway/models/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
+
+</details>
 <!-- End Error Handling [errors] -->
 
 <!-- Start Server Selection [server] -->

@@ -19,6 +19,7 @@ As a successful result a `GetSmsPriceResponse` object will be returned with `res
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -27,20 +28,15 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.sms.get_price(request=[
-        {
-            "recipients": {
-                "nr": "+48999999999",
-                "cid": "my-id-1113",
-            },
-            "message": "To jest treść wiadomości",
-            "sender": "Bramka SMS",
-            "type": 1,
-            "unicode": False,
-            "flash": False,
-            "date_": None,
-        },
-    ])
+    res = client.outgoing.sms.get_price(request={
+        "recipients": "+48999999999",
+        "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
 
     # Handle response
     print(res)
@@ -75,6 +71,7 @@ As a successful result a `SendSmsResponse` object will be returned with `result`
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -83,19 +80,15 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.sms.send(request=[
-        {
-            "recipients": [
-                "+48999999999",
-            ],
-            "message": "To jest treść wiadomości",
-            "sender": "Bramka SMS",
-            "type": 1,
-            "unicode": False,
-            "flash": False,
-            "date_": None,
-        },
-    ])
+    res = client.outgoing.sms.send(request={
+        "recipients": "+48999999999",
+        "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
 
     # Handle response
     print(res)

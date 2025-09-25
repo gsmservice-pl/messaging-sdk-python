@@ -5,5 +5,13 @@ from gsmservice_gateway.types import UnrecognizedInt
 from typing import Literal, Union
 
 
-MessageType = Union[Literal[1, 3, 4, 10], UnrecognizedInt]
+MessageType = Union[
+    Literal[
+        1,
+        3,
+        4,
+        10,
+    ],
+    UnrecognizedInt,
+]
 r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""

@@ -19,6 +19,7 @@ As a successful result a `GetMmsPriceResponse` object will be returned with `res
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -27,20 +28,13 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.mms.get_price(request=[
-        {
-            "recipients": {
-                "nr": "+48999999999",
-                "cid": "my-id-1113",
-            },
-            "subject": "To jest temat wiadomości",
-            "message": "To jest treść wiadomości",
-            "attachments": [
-                "<file_body in base64 format>",
-            ],
-            "date_": None,
-        },
-    ])
+    res = client.outgoing.mms.get_price(request={
+        "recipients": "+48999999999",
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content.",
+        "attachments": "<file body in base64 format>",
+        "date_": None,
+    })
 
     # Handle response
     print(res)
@@ -75,6 +69,7 @@ As a successful result a `SendMmsResponse` object will be returned with `result`
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -83,19 +78,13 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.outgoing.mms.send(request=[
-        {
-            "recipients": [
-                "+48999999999",
-            ],
-            "subject": "To jest temat wiadomości",
-            "message": "To jest treść wiadomości",
-            "attachments": [
-                "<file_body in base64 format>",
-            ],
-            "date_": None,
-        },
-    ])
+    res = client.outgoing.mms.send(request={
+        "recipients": "+48999999999",
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content.",
+        "attachments": "<file body in base64 format>",
+        "date_": None,
+    })
 
     # Handle response
     print(res)

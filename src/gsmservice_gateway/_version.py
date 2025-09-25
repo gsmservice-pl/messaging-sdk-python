@@ -3,10 +3,10 @@
 import importlib.metadata
 
 __title__: str = "gsmservice-gateway"
-__version__: str = "3.0.1"
-__openapi_doc_version__: str = "1.2.1"
-__gen_version__: str = "2.539.1"
-__user_agent__: str = "speakeasy-sdk/python 3.0.1 2.539.1 1.2.1 gsmservice-gateway"
+__version__: str = "3.1.1"
+__openapi_doc_version__: str = "1.2.2"
+__gen_version__: str = "2.716.5"
+__user_agent__: str = "speakeasy-sdk/python 3.1.1 2.716.5 1.2.2 gsmservice-gateway"
 
 try:
     if __package__ is not None:

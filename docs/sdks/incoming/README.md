@@ -16,6 +16,7 @@ As a successful result a `ListIncomingMessagesResponse` object will be returned 
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="listIncomingMessages" method="get" path="/incoming" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -24,7 +25,7 @@ with Client(
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 
-    res = client.incoming.list()
+    res = client.incoming.list(page=1, limit=10)
 
     # Handle response
     print(res)
@@ -58,6 +59,7 @@ As a successful result a `GetIncomingMessagesResponse` object will be returned w
 
 ### Example Usage
 
+<!-- UsageSnippet language="python" operationID="getIncomingMessages" method="get" path="/incoming/{ids}" -->
 ```python
 from gsmservice_gateway import Client
 

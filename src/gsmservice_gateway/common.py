@@ -49,6 +49,7 @@ class Common(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value="application/json",
             http_headers=http_headers,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -69,7 +70,7 @@ class Common(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="ping",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=None,
             ),
             request=req,
@@ -133,6 +134,7 @@ class Common(BaseSDK):
             user_agent_header="user-agent",
             accept_header_value="application/json",
             http_headers=http_headers,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -153,7 +155,7 @@ class Common(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="ping",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=None,
             ),
             request=req,

@@ -1,7 +1,7 @@
 
 [project]
 name = "gsmservice-gateway"
-version = "3.1.1"
+version = "3.2.3"
 description = "Python Client SDK for Messaging Gateway SzybkiSMS.pl"
 authors = [{ name = "SzybkiSMS.pl" },]
 readme = "README.md"
@@ -27,6 +27,7 @@ in-project = true
 [tool.poetry.group.dev.dependencies]
 mypy = "==1.15.0"
 pylint = "==3.2.3"
+pyright = "==1.1.398"
 
 [build-system]
 requires = ["poetry-core"]

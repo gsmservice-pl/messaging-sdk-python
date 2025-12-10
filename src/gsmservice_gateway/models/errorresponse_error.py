@@ -28,7 +28,7 @@ class ErrorResponseErrorData(BaseModel):
     r"""A URI reference that identifies the specific occurrence of the problem"""
 
 
-@dataclass(frozen=True)
+@dataclass(unsafe_hash=True)
 class ErrorResponseError(ClientError):
     r"""An object that complies with RFC 9457 containing information about a request error"""
 

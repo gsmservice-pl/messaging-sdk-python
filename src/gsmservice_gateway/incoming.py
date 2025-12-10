@@ -61,6 +61,7 @@ class Incoming(BaseSDK):
             accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -81,7 +82,7 @@ class Incoming(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="listIncomingMessages",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -163,6 +164,7 @@ class Incoming(BaseSDK):
             accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -183,7 +185,7 @@ class Incoming(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="listIncomingMessages",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -262,6 +264,7 @@ class Incoming(BaseSDK):
             accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -282,7 +285,7 @@ class Incoming(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="getIncomingMessages",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -361,6 +364,7 @@ class Incoming(BaseSDK):
             accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -381,7 +385,7 @@ class Incoming(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="getIncomingMessages",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -399,6 +403,222 @@ class Incoming(BaseSDK):
             )
         if utils.match_response(
             http_res, ["400", "401", "404", "4XX"], "application/problem+json"
+        ):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
+
+        raise models.SDKError("Unexpected response received", http_res)
+
+    def remove_by_ids(
+        self,
+        *,
+        ids: List[int],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.RemoveIncomingMessagesResponse:
+        r"""Remove the incoming messages from your inbox
+
+        Remove incoming messages from your inbox using their `ids`. You have to pass the unique incoming message IDs as path parameter. If you want to remove multiple incoming messages at once, please separate their IDs with a comma. The system will accept maximum 50 identifiers in one call. If you need to remove larger volume of incoming messages, please split it to several separate requests.
+
+        As a successful result an array with `RemovedIncomingMessage` objects will be returned, each object per single incoming message id. The `status` property will contain a status code of operation - `204` if incoming message was removed successfully and other code if an error occured with removing a given incoming message. In case of an error, an `error` property will contain `ErrorResponse` object with the details of an error.
+
+        Response will also include meta-data headers: `X-Success-Count` (a count of incoming messages which were removed successfully), `X-Error-Count` (count of incoming messages which were not removed) and `X-Sandbox` (if a request was made in Sandbox or Production system).
+
+        If you pass duplicated incoming message IDs in one call, API will process them only once. This request have to be authenticated using **API Access Token**.
+
+        In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc7807)).
+
+        :param ids: List[str] with Message IDs assigned by the system. The system will accept a maximum of 50 identifiers in one call.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.RemoveIncomingMessagesRequest(
+            ids=ids,
+        )
+
+        req = self._build_request(
+            method="DELETE",
+            path="/incoming/{ids}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="removeIncomingMessages",
+                oauth2_scopes=None,
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return models.RemoveIncomingMessagesResponse(
+                result=unmarshal_json_response(
+                    List[models.RemovedIncomingMessage], http_res
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+        ):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
+        if utils.match_response(http_res, "5XX", "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
+
+        raise models.SDKError("Unexpected response received", http_res)
+
+    async def remove_by_ids_async(
+        self,
+        *,
+        ids: List[int],
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.RemoveIncomingMessagesResponse:
+        r"""Remove the incoming messages from your inbox
+
+        Remove incoming messages from your inbox using their `ids`. You have to pass the unique incoming message IDs as path parameter. If you want to remove multiple incoming messages at once, please separate their IDs with a comma. The system will accept maximum 50 identifiers in one call. If you need to remove larger volume of incoming messages, please split it to several separate requests.
+
+        As a successful result an array with `RemovedIncomingMessage` objects will be returned, each object per single incoming message id. The `status` property will contain a status code of operation - `204` if incoming message was removed successfully and other code if an error occured with removing a given incoming message. In case of an error, an `error` property will contain `ErrorResponse` object with the details of an error.
+
+        Response will also include meta-data headers: `X-Success-Count` (a count of incoming messages which were removed successfully), `X-Error-Count` (count of incoming messages which were not removed) and `X-Sandbox` (if a request was made in Sandbox or Production system).
+
+        If you pass duplicated incoming message IDs in one call, API will process them only once. This request have to be authenticated using **API Access Token**.
+
+        In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc7807)).
+
+        :param ids: List[str] with Message IDs assigned by the system. The system will accept a maximum of 50 identifiers in one call.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        request = models.RemoveIncomingMessagesRequest(
+            ids=ids,
+        )
+
+        req = self._build_request_async(
+            method="DELETE",
+            path="/incoming/{ids}",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=True,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+            else:
+                retries = utils.RetryConfig(
+                    "backoff", utils.BackoffStrategy(500, 60000, 1.5, 3600000), True
+                )
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["5XX"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="removeIncomingMessages",
+                oauth2_scopes=None,
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return models.RemoveIncomingMessagesResponse(
+                result=unmarshal_json_response(
+                    List[models.RemovedIncomingMessage], http_res
+                ),
+                headers=utils.get_response_headers(http_res.headers),
+            )
+        if utils.match_response(
+            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res

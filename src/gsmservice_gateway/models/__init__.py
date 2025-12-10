@@ -79,6 +79,16 @@ if TYPE_CHECKING:
     from .phonenumberwithcid import PhoneNumberWithCid, PhoneNumberWithCidTypedDict
     from .pingresponse import PingResponse, PingResponseTypedDict
     from .price import Price, PriceTypedDict
+    from .removedincomingmessage import (
+        RemovedIncomingMessage,
+        RemovedIncomingMessageTypedDict,
+    )
+    from .removeincomingmessagesop import (
+        RemoveIncomingMessagesRequest,
+        RemoveIncomingMessagesRequestTypedDict,
+        RemoveIncomingMessagesResponse,
+        RemoveIncomingMessagesResponseTypedDict,
+    )
     from .responsevalidationerror import ResponseValidationError
     from .sdkerror import SDKError
     from .security import Security, SecurityTypedDict
@@ -175,6 +185,12 @@ __all__ = [
     "PriceTypedDict",
     "Recipients",
     "RecipientsTypedDict",
+    "RemoveIncomingMessagesRequest",
+    "RemoveIncomingMessagesRequestTypedDict",
+    "RemoveIncomingMessagesResponse",
+    "RemoveIncomingMessagesResponseTypedDict",
+    "RemovedIncomingMessage",
+    "RemovedIncomingMessageTypedDict",
     "ResponseValidationError",
     "SDKError",
     "Security",
@@ -266,6 +282,12 @@ _dynamic_imports: dict[str, str] = {
     "PingResponseTypedDict": ".pingresponse",
     "Price": ".price",
     "PriceTypedDict": ".price",
+    "RemovedIncomingMessage": ".removedincomingmessage",
+    "RemovedIncomingMessageTypedDict": ".removedincomingmessage",
+    "RemoveIncomingMessagesRequest": ".removeincomingmessagesop",
+    "RemoveIncomingMessagesRequestTypedDict": ".removeincomingmessagesop",
+    "RemoveIncomingMessagesResponse": ".removeincomingmessagesop",
+    "RemoveIncomingMessagesResponseTypedDict": ".removeincomingmessagesop",
     "ResponseValidationError": ".responsevalidationerror",
     "SDKError": ".sdkerror",
     "Security": ".security",

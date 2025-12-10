@@ -1,0 +1,12 @@
+# RemovedIncomingMessage
+
+An object containing information about results of removing single incoming message
+
+
+## Fields
+
+| Field                                                                              | Type                                                                               | Required                                                                           | Description                                                                        | Example                                                                            |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `id`                                                                               | *Optional[int]*                                                                    | :heavy_minus_sign:                                                                 | Incoming Message ID                                                                | 62456                                                                              |
+| `status`                                                                           | *Optional[int]*                                                                    | :heavy_minus_sign:                                                                 | Status of removing (204 if removed successfully or error status code)              | 400                                                                                |
+| `error`                                                                            | [OptionalNullable[models.ErrorResponse]](../models/errorresponse.md)               | :heavy_minus_sign:                                                                 | An object that complies with RFC 9457 containing information about a request error |                                                                                    |

@@ -12,7 +12,7 @@ from gsmservice_gateway.types import (
 )
 import pydantic
 from pydantic import model_serializer
-from typing import List, Optional, Union
+from typing import List, Union
 from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
 
@@ -48,7 +48,7 @@ class MmsMessageTypedDict(TypedDict):
     r"""MMS message subject"""
     message: NotRequired[Nullable[str]]
     r"""MMS message content"""
-    attachments: NotRequired[AttachmentsTypedDict]
+    attachments: NotRequired[Nullable[AttachmentsTypedDict]]
     r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
     date_: NotRequired[Nullable[datetime]]
     r"""Scheduled future date and time of sending the message (in ISO 8601 format). If missing or null - message will be sent immediately"""
@@ -66,7 +66,7 @@ class MmsMessage(BaseModel):
     message: OptionalNullable[str] = UNSET
     r"""MMS message content"""
 
-    attachments: Optional[Attachments] = None
+    attachments: OptionalNullable[Attachments] = UNSET
     r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
 
     date_: Annotated[OptionalNullable[datetime], pydantic.Field(alias="date")] = None
@@ -75,7 +75,7 @@ class MmsMessage(BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = ["subject", "message", "attachments", "date"]
-        nullable_fields = ["subject", "message", "date"]
+        nullable_fields = ["subject", "message", "attachments", "date"]
         null_default_fields = ["date"]
 
         serialized = handler(self)

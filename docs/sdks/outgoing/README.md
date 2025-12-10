@@ -1,5 +1,4 @@
 # Outgoing
-(*outgoing*)
 
 ## Overview
 

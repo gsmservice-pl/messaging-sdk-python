@@ -233,38 +233,38 @@ asyncio.run(main())
 <details open>
 <summary>Available methods</summary>
 
-### [accounts](docs/sdks/accounts/README.md)
+### [Accounts](docs/sdks/accounts/README.md)
 
 * [get](docs/sdks/accounts/README.md#get) - Get account details
 * [get_subaccount](docs/sdks/accounts/README.md#get_subaccount) - Get subaccount details
 
-
-### [common](docs/sdks/common/README.md)
+### [Common](docs/sdks/common/README.md)
 
 * [ping](docs/sdks/common/README.md#ping) - Checks API availability and version
 
-### [incoming](docs/sdks/incoming/README.md)
+### [Incoming](docs/sdks/incoming/README.md)
 
 * [list](docs/sdks/incoming/README.md#list) - List the received SMS messages
 * [get_by_ids](docs/sdks/incoming/README.md#get_by_ids) - Get the incoming messages by IDs
+* [remove_by_ids](docs/sdks/incoming/README.md#remove_by_ids) - Remove the incoming messages from your inbox
 
-### [outgoing](docs/sdks/outgoing/README.md)
+### [Outgoing](docs/sdks/outgoing/README.md)
 
 * [get_by_ids](docs/sdks/outgoing/README.md#get_by_ids) - Get the messages details and status by IDs
 * [cancel_scheduled](docs/sdks/outgoing/README.md#cancel_scheduled) - Cancel a scheduled messages
 * [list](docs/sdks/outgoing/README.md#list) - Lists the history of sent messages
 
-#### [outgoing.mms](docs/sdks/mms/README.md)
+#### [Outgoing.Mms](docs/sdks/mms/README.md)
 
 * [get_price](docs/sdks/mms/README.md#get_price) - Check the price of MMS Messages
 * [send](docs/sdks/mms/README.md#send) - Send MMS Messages
 
-#### [outgoing.sms](docs/sdks/sms/README.md)
+#### [Outgoing.Sms](docs/sdks/sms/README.md)
 
 * [get_price](docs/sdks/sms/README.md#get_price) - Check the price of SMS Messages
 * [send](docs/sdks/sms/README.md#send) - Send SMS Messages
 
-### [senders](docs/sdks/senders/README.md)
+### [Senders](docs/sdks/senders/README.md)
 
 * [list](docs/sdks/senders/README.md#list) - List allowed senders names
 * [add](docs/sdks/senders/README.md#add) - Add a new sender name
@@ -404,7 +404,7 @@ from gsmservice_gateway import Client
 
 
 with Client(
-    server="sandbox",
+    server="prod",
     bearer="<YOUR API ACCESS TOKEN>",
 ) as client:
 

@@ -57,6 +57,7 @@ class Senders(BaseSDK):
             accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -77,7 +78,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="listSenders",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -146,6 +147,7 @@ class Senders(BaseSDK):
             accept_header_value="application/json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -166,7 +168,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="listSenders",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -245,6 +247,7 @@ class Senders(BaseSDK):
             get_serialized_body=lambda: utils.serialize_request_body(
                 request, False, False, "json", models.SenderInput
             ),
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -265,7 +268,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="addSender",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -347,6 +350,7 @@ class Senders(BaseSDK):
             get_serialized_body=lambda: utils.serialize_request_body(
                 request, False, False, "json", models.SenderInput
             ),
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -367,7 +371,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="addSender",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -446,6 +450,7 @@ class Senders(BaseSDK):
             accept_header_value="application/problem+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -466,7 +471,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="deleteSender",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -544,6 +549,7 @@ class Senders(BaseSDK):
             accept_header_value="application/problem+json",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -564,7 +570,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="deleteSender",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -646,6 +652,7 @@ class Senders(BaseSDK):
             else "application/json;q=1, application/problem+json;q=0",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -666,7 +673,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="setDefaultSender",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
@@ -753,6 +760,7 @@ class Senders(BaseSDK):
             else "application/json;q=1, application/problem+json;q=0",
             http_headers=http_headers,
             security=self.sdk_configuration.security,
+            allow_empty_value=None,
             timeout_ms=timeout_ms,
         )
 
@@ -773,7 +781,7 @@ class Senders(BaseSDK):
                 config=self.sdk_configuration,
                 base_url=base_url or "",
                 operation_id="setDefaultSender",
-                oauth2_scopes=[],
+                oauth2_scopes=None,
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),

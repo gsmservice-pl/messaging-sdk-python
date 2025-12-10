@@ -1,5 +1,4 @@
 # Senders
-(*senders*)
 
 ## Overview
 

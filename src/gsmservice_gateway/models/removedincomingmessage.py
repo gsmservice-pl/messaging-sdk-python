@@ -22,7 +22,9 @@ class RemovedIncomingMessageTypedDict(TypedDict):
     status: NotRequired[int]
     r"""Status of removing (204 if removed successfully or error status code)"""
     error: NotRequired[Nullable[ErrorResponseTypedDict]]
-    r"""An object that complies with RFC 9457 containing information about a request error"""
+    r"""RFC 9457 Problem Details. See the [error catalog](https://api.szybkisms.pl/problems/) for problem types and recovery steps.
+    https://api.szybkisms.pl/problems/ - Error catalog and operation results
+    """
 
 
 class RemovedIncomingMessage(BaseModel):
@@ -35,34 +37,31 @@ class RemovedIncomingMessage(BaseModel):
     r"""Status of removing (204 if removed successfully or error status code)"""
 
     error: OptionalNullable[ErrorResponse] = UNSET
-    r"""An object that complies with RFC 9457 containing information about a request error"""
+    r"""RFC 9457 Problem Details. See the [error catalog](https://api.szybkisms.pl/problems/) for problem types and recovery steps.
+    https://api.szybkisms.pl/problems/ - Error catalog and operation results
+    """
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = ["id", "status", "error"]
-        nullable_fields = ["error"]
-        null_default_fields = []
-
+        optional_fields = set(["id", "status", "error"])
+        nullable_fields = set(["error"])
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m

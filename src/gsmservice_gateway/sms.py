@@ -91,9 +91,24 @@ class Sms(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\nuse Gsmservice\\Gateway\\Models\\Components;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n$request = new Components\\SmsMessage(\n    recipients: '+48999999999',\n    message: 'This is SMS message content.',\n    unicode: true,\n);\n\n$response = $sdk->outgoing->sms->getPrice(\n    request: $request\n);\n\nif ($response->prices !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.sms.getPrice({\n    recipients: "+48999999999",\n    message: "This is SMS message content.",\n    sender: "Bramka SMS",\n    type: 1,\n    unicode: true,\n    flash: false,\n    date: null,\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -103,8 +118,13 @@ class Sms(BaseSDK):
                 result=unmarshal_json_response(List[models.Price], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "4XX"], "application/problem+json"
+            http_res, ["400", "415", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -199,9 +219,24 @@ class Sms(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\nuse Gsmservice\\Gateway\\Models\\Components;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n$request = new Components\\SmsMessage(\n    recipients: '+48999999999',\n    message: 'This is SMS message content.',\n    unicode: true,\n);\n\n$response = $sdk->outgoing->sms->getPrice(\n    request: $request\n);\n\nif ($response->prices !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.sms.getPrice({\n    recipients: "+48999999999",\n    message: "This is SMS message content.",\n    sender: "Bramka SMS",\n    type: 1,\n    unicode: true,\n    flash: false,\n    date: null,\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -211,8 +246,13 @@ class Sms(BaseSDK):
                 result=unmarshal_json_response(List[models.Price], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "4XX"], "application/problem+json"
+            http_res, ["400", "415", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -304,9 +344,24 @@ class Sms(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\nuse Gsmservice\\Gateway\\Models\\Components;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n$request = new Components\\SmsMessage(\n    recipients: '+48999999999',\n    message: 'This is SMS message content.',\n    unicode: true,\n);\n\n$response = $sdk->outgoing->sms->send(\n    request: $request\n);\n\nif ($response->messages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.sms.send({\n    recipients: "+48999999999",\n    message: "This is SMS message content.",\n    sender: "Bramka SMS",\n    type: 1,\n    unicode: true,\n    flash: false,\n    date: null,\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -316,8 +371,13 @@ class Sms(BaseSDK):
                 result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "415", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -409,9 +469,24 @@ class Sms(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\nuse Gsmservice\\Gateway\\Models\\Components;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n$request = new Components\\SmsMessage(\n    recipients: '+48999999999',\n    message: 'This is SMS message content.',\n    unicode: true,\n);\n\n$response = $sdk->outgoing->sms->send(\n    request: $request\n);\n\nif ($response->messages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.sms.send({\n    recipients: "+48999999999",\n    message: "This is SMS message content.",\n    sender: "Bramka SMS",\n    type: 1,\n    unicode: true,\n    flash: false,\n    date: null,\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -421,8 +496,13 @@ class Sms(BaseSDK):
                 result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "415", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res

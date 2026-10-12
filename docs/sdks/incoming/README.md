@@ -48,7 +48,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 404, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## get_by_ids
@@ -92,7 +93,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 404, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 404, 4XX             | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## remove_by_ids
@@ -105,7 +107,7 @@ Response will also include meta-data headers: `X-Success-Count` (a count of inco
  
 If you pass duplicated incoming message IDs in one call, API will process them only once. This request have to be authenticated using **API Access Token**.
 
-In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc7807)).
+In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)).
 
 ### Example Usage
 
@@ -142,5 +144,6 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 404, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |

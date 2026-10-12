@@ -16,9 +16,137 @@ As a successful result a `GetMmsPriceResponse` object will be returned with `res
 
 `GetSmsPriceResponse` object will include also `headers` property with `X-Success-Count` (a count of messages which were processed successfully) and `X-Error-Count` (count of messages which were rejected) elements.
 
-### Example Usage
+### Example Usage: bulk
 
-<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" -->
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" example="bulk" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.get_price(request=[
+        {
+            "recipients": "+48999999999",
+            "subject": "This is a subject of the first message",
+            "message": "This is first MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+        {
+            "recipients": "+48999888777",
+            "subject": "This is a subject of the second message",
+            "message": "This is second MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: bulk_cid
+
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" example="bulk_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.get_price(request=[
+        {
+            "recipients": {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            "subject": "This is a subject of the first message",
+            "message": "This is first MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+        {
+            "recipients": {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+            "subject": "This is a subject of the second message",
+            "message": "This is second MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi
+
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" example="multi" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.get_price(request={
+        "recipients": [
+            "+48999999999",
+            "+48999888777",
+        ],
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content.",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi_cid
+
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" example="multi_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.get_price(request={
+        "recipients": [
+            {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+        ],
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single
+
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" example="single" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -31,7 +159,33 @@ with Client(
         "recipients": "+48999999999",
         "subject": "This is a subject of the message",
         "message": "This is MMS message content.",
-        "attachments": "<file body in base64 format>",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single_cid
+
+<!-- UsageSnippet language="python" operationID="getMmsPrice" method="post" path="/messages/mms/price" example="single_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.get_price(request={
+        "recipients": {
+            "nr": "+48999999999",
+            "cid": "custom-id-A44445T",
+        },
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
         "date_": None,
     })
 
@@ -55,7 +209,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 4XX             | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 415, 4XX             | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## send
@@ -66,9 +221,137 @@ As a successful result a `SendMmsResponse` object will be returned with `result`
 
 `SendMmsResponse` will also include `headers` property with `X-Success-Count` (a count of messages which were processed successfully), `X-Error-Count` (count of messages which were rejected) and `X-Sandbox` (if a request was made in Sandbox or Production system) elements.
 
-### Example Usage
+### Example Usage: bulk
 
-<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" -->
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" example="bulk" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.send(request=[
+        {
+            "recipients": "+48999999999",
+            "subject": "This is a subject of the first message",
+            "message": "This is first MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+        {
+            "recipients": "+48999888777",
+            "subject": "This is a subject of the second message",
+            "message": "This is second MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: bulk_cid
+
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" example="bulk_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.send(request=[
+        {
+            "recipients": {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            "subject": "This is a subject of the first message",
+            "message": "This is first MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+        {
+            "recipients": {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+            "subject": "This is a subject of the second message",
+            "message": "This is second MMS message content",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi
+
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" example="multi" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.send(request={
+        "recipients": [
+            "+48999999999",
+            "+48999888777",
+        ],
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content.",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi_cid
+
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" example="multi_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.send(request={
+        "recipients": [
+            {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+        ],
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single
+
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" example="single" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -81,7 +364,33 @@ with Client(
         "recipients": "+48999999999",
         "subject": "This is a subject of the message",
         "message": "This is MMS message content.",
-        "attachments": "<file body in base64 format>",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single_cid
+
+<!-- UsageSnippet language="python" operationID="sendMms" method="post" path="/messages/mms" example="single_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.mms.send(request={
+        "recipients": {
+            "nr": "+48999999999",
+            "cid": "custom-id-A44445T",
+        },
+        "subject": "This is a subject of the message",
+        "message": "This is MMS message content",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
         "date_": None,
     })
 
@@ -105,5 +414,6 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 415, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |

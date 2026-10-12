@@ -49,7 +49,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 404, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## cancel_scheduled
@@ -95,7 +96,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 404, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## list
@@ -138,5 +140,6 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 404, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |

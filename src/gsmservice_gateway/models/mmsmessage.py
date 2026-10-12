@@ -45,9 +45,9 @@ class MmsMessageTypedDict(TypedDict):
     recipients: RecipientsTypedDict
     r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
     subject: NotRequired[Nullable[str]]
-    r"""MMS message subject"""
+    r"""MMS message subject. Missing or null is treated as an empty subject."""
     message: NotRequired[Nullable[str]]
-    r"""MMS message content"""
+    r"""MMS message content. Missing or null is treated as empty text; a message may contain attachments."""
     attachments: NotRequired[Nullable[AttachmentsTypedDict]]
     r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
     date_: NotRequired[Nullable[datetime]]
@@ -61,10 +61,10 @@ class MmsMessage(BaseModel):
     r"""The recipient number or multiple recipients numbers of single message. To set one recipient, simply pass a `str` with his phone number. To set multiple recipients, please pass `List[str]`. Optionally you can also set custom id (user identifier) for each message - pass `PhoneNumberWithCid` object (in case of single recipient) or List[PhoneNumberWithCid] (in case of multiple recipients)."""
 
     subject: OptionalNullable[str] = UNSET
-    r"""MMS message subject"""
+    r"""MMS message subject. Missing or null is treated as an empty subject."""
 
     message: OptionalNullable[str] = UNSET
-    r"""MMS message content"""
+    r"""MMS message content. Missing or null is treated as empty text; a message may contain attachments."""
 
     attachments: OptionalNullable[Attachments] = UNSET
     r"""Attachments for the message. You can pass here images, audio and video files bodies. To set one attachment please pass a `str` with attachment body encoded with `base64`. To set multiple attachments - pass `List[str]` with attachments bodies encoded with `base64`. Max 3 attachments per message."""
@@ -74,30 +74,35 @@ class MmsMessage(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = ["subject", "message", "attachments", "date"]
-        nullable_fields = ["subject", "message", "attachments", "date"]
-        null_default_fields = ["date"]
-
+        optional_fields = set(["subject", "message", "attachments", "date"])
+        nullable_fields = set(["subject", "message", "attachments", "date"])
+        null_default_fields = set(["date"])
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (
+                    self.__pydantic_fields_set__.intersection({n})
+                    or k in null_default_fields
+                )  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
+
+
+try:
+    MmsMessage.model_rebuild()
+except NameError:
+    pass

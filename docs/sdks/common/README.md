@@ -36,11 +36,12 @@ with Client() as client:
 
 ### Response
 
-**[models.PingResponse](../../models/pingresponse.md)**
+**[models.PingResponse1](../../models/pingresponse1.md)**
 
 ### Errors
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
+| models.ErrorResponseError | 405                       | application/problem+json  |
 | models.ErrorResponseError | 400, 4XX                  | application/problem+json  |
 | models.ErrorResponseError | 503, 5XX                  | application/problem+json  |

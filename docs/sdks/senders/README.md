@@ -41,13 +41,14 @@ with Client(
 
 ### Response
 
-**[List[models.Sender]](../../models/.md)**
+**[models.ListSendersResponse](../../models/listsendersresponse.md)**
 
 ### Errors
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 4XX             | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## add
@@ -92,7 +93,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 415, 422, 4XX   | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## delete
@@ -134,7 +136,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 404, 4XX   | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 403, 404, 4XX             | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## set_default
@@ -176,6 +179,6 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 404                       | application/json          |
-| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 404, 409, 4XX   | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |

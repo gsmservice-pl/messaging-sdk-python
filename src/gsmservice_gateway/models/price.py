@@ -9,18 +9,16 @@ from gsmservice_gateway.types import (
     UNSET,
     UNSET_SENTINEL,
 )
-from gsmservice_gateway.utils import validate_open_enum
 from pydantic import model_serializer
-from pydantic.functional_validators import PlainValidator
 from typing import Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class PriceTypedDict(TypedDict):
-    r"""An object with the properties and price of a single message"""
+    r"""The pricing result for a single message, returned as part of an HTTP 200 response."""
 
     error: NotRequired[Nullable[str]]
-    r"""Information about a possible error"""
+    r"""Description of a pricing failure for this message, or null when pricing succeeded. The batch response uses HTTP 200."""
     cid: NotRequired[Nullable[str]]
     r"""Custom message ID assigned by the User"""
     type: NotRequired[MessageType]
@@ -40,17 +38,15 @@ class PriceTypedDict(TypedDict):
 
 
 class Price(BaseModel):
-    r"""An object with the properties and price of a single message"""
+    r"""The pricing result for a single message, returned as part of an HTTP 200 response."""
 
     error: OptionalNullable[str] = UNSET
-    r"""Information about a possible error"""
+    r"""Description of a pricing failure for this message, or null when pricing succeeded. The batch response uses HTTP 200."""
 
     cid: OptionalNullable[str] = UNSET
     r"""Custom message ID assigned by the User"""
 
-    type: Annotated[Optional[MessageType], PlainValidator(validate_open_enum(True))] = (
-        None
-    )
+    type: Optional[MessageType] = None
     r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
 
     recipient: Optional[str] = None
@@ -73,40 +69,37 @@ class Price(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = [
-            "error",
-            "cid",
-            "type",
-            "recipient",
-            "sender",
-            "parts",
-            "unicode",
-            "flash",
-            "price",
-        ]
-        nullable_fields = ["error", "cid", "sender", "parts"]
-        null_default_fields = []
-
+        optional_fields = set(
+            [
+                "error",
+                "cid",
+                "type",
+                "recipient",
+                "sender",
+                "parts",
+                "unicode",
+                "flash",
+                "price",
+            ]
+        )
+        nullable_fields = set(["error", "cid", "sender", "parts"])
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m

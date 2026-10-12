@@ -10,11 +10,9 @@ from gsmservice_gateway.types import (
     UNSET,
     UNSET_SENTINEL,
 )
-from gsmservice_gateway.utils import validate_open_enum
 from pydantic import model_serializer
-from pydantic.functional_validators import PlainValidator
 from typing import Optional
-from typing_extensions import Annotated, NotRequired, TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class MessageTypedDict(TypedDict):
@@ -37,9 +35,9 @@ class MessageTypedDict(TypedDict):
     status_date: NotRequired[Nullable[datetime]]
     r"""Date and time of last status change (in ISO 8601 format)"""
     status_code: NotRequired[str]
-    r"""Message status code"""
+    r"""Message-processing status, e.g. QUEUED or REJECTED. Sending results use HTTP 200; further delivery status is available in message history."""
     status_description: NotRequired[str]
-    r"""Human redable description of message status"""
+    r"""Human-readable description of the message status and any rejection reason."""
     unicode: NotRequired[bool]
     r"""Did the message contain special characters, e.g. Polish diacritics?"""
     flash: NotRequired[bool]
@@ -57,9 +55,7 @@ class Message(BaseModel):
     cid: OptionalNullable[str] = UNSET
     r"""Custom message ID assigned by the User"""
 
-    type: Annotated[Optional[MessageType], PlainValidator(validate_open_enum(True))] = (
-        None
-    )
+    type: Optional[MessageType] = None
     r"""Message type (1 -> SMS PRO, 3 -> SMS ECO, 4 -> SMS 2WAY, 10 -> MMS)"""
 
     recipient: Optional[str] = None
@@ -78,10 +74,10 @@ class Message(BaseModel):
     r"""Date and time of last status change (in ISO 8601 format)"""
 
     status_code: Optional[str] = None
-    r"""Message status code"""
+    r"""Message-processing status, e.g. QUEUED or REJECTED. Sending results use HTTP 200; further delivery status is available in message history."""
 
     status_description: Optional[str] = None
-    r"""Human redable description of message status"""
+    r"""Human-readable description of the message status and any rejection reason."""
 
     unicode: Optional[bool] = None
     r"""Did the message contain special characters, e.g. Polish diacritics?"""
@@ -94,44 +90,43 @@ class Message(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = [
-            "id",
-            "cid",
-            "type",
-            "recipient",
-            "sender",
-            "parts",
-            "sent_date",
-            "status_date",
-            "status_code",
-            "status_description",
-            "unicode",
-            "flash",
-            "price",
-        ]
-        nullable_fields = ["id", "cid", "sender", "parts", "sent_date", "status_date"]
-        null_default_fields = []
-
+        optional_fields = set(
+            [
+                "id",
+                "cid",
+                "type",
+                "recipient",
+                "sender",
+                "parts",
+                "sent_date",
+                "status_date",
+                "status_code",
+                "status_description",
+                "unicode",
+                "flash",
+                "price",
+            ]
+        )
+        nullable_fields = set(
+            ["id", "cid", "sender", "parts", "sent_date", "status_date"]
+        )
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m

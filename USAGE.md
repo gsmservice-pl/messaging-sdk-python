@@ -74,7 +74,7 @@ with Client(
         "recipients": "+48999999999",
         "subject": "This is a subject of the message",
         "message": "This is MMS message content.",
-        "attachments": "<file body in base64 format>",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
         "date_": None,
     })
 
@@ -101,7 +101,7 @@ async def main():
             "recipients": "+48999999999",
             "subject": "This is a subject of the message",
             "message": "This is MMS message content.",
-            "attachments": "<file body in base64 format>",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
             "date_": None,
         })
 

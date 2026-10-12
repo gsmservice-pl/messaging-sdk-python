@@ -39,13 +39,14 @@ with Client(
 
 ### Response
 
-**[models.AccountResponse](../../models/accountresponse.md)**
+**[models.GetAccountDetailsResponse](../../models/getaccountdetailsresponse.md)**
 
 ### Errors
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 401, 403, 4XX             | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 403, 4XX                  | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## get_subaccount
@@ -83,11 +84,12 @@ with Client(
 
 ### Response
 
-**[models.AccountResponse](../../models/accountresponse.md)**
+**[models.GetSubaccountDetailsResponse](../../models/getsubaccountdetailsresponse.md)**
 
 ### Errors
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 401, 403, 404, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 403, 404, 4XX             | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |

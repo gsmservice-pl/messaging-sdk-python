@@ -82,7 +82,7 @@ It's also possible to write a standalone Python script without needing to set up
 ```python
 #!/usr/bin/env -S uv run --script
 # /// script
-# requires-python = ">=3.9"
+# requires-python = ">=3.10"
 # dependencies = [
 #     "gsmservice-gateway",
 # ]
@@ -189,7 +189,7 @@ with Client(
         "recipients": "+48999999999",
         "subject": "This is a subject of the message",
         "message": "This is MMS message content.",
-        "attachments": "<file body in base64 format>",
+        "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
         "date_": None,
     })
 
@@ -216,7 +216,7 @@ async def main():
             "recipients": "+48999999999",
             "subject": "This is a subject of the message",
             "message": "This is MMS message content.",
-            "attachments": "<file body in base64 format>",
+            "attachments": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
             "date_": None,
         })
 
@@ -367,7 +367,7 @@ with Client(
 ### Error Classes
 **Primary errors:**
 * [`ClientError`](./src/gsmservice_gateway/models/clienterror.py): The base class for HTTP error responses.
-  * [`ErrorResponseError`](./src/gsmservice_gateway/models/errorresponseerror.py): An object that complies with RFC 9457 containing information about a request error.
+  * [`ErrorResponseError`](./src/gsmservice_gateway/models/errorresponseerror.py): RFC 9457 Problem Details. See the [error catalog](https://api.szybkisms.pl/problems/) for problem types and recovery steps.
 
 <details><summary>Less common errors (5)</summary>
 
@@ -514,6 +514,20 @@ class CustomClient(AsyncHttpClient):
 
 s = Client(async_client=CustomClient(httpx.AsyncClient()))
 ```
+### httpx2 (Pydantic's httpx fork)
+
+[httpx2](https://httpx2.pydantic.dev/) is Pydantic's maintained fork of `httpx`. To run this SDK on httpx2, call `alias_httpx()` at your program's entry point, before importing the SDK, so every `import httpx` — including the ones inside the SDK — resolves to `httpx2`:
+```python
+import httpx2
+
+httpx2.alias_httpx()
+
+from gsmservice_gateway import Client
+
+s = Client()
+```
+
+An SDK can also be generated against httpx2 directly, so it depends on the fork instead of `httpx`, by setting `python.httpClientLibrary: httpx2` in `gen.yaml`.
 <!-- End Custom HTTP Client [http-client] -->
 
 <!-- Start Authentication [security] -->

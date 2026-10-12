@@ -69,8 +69,8 @@ class Client(BaseSDK):
         self,
         bearer: Optional[Union[Optional[str], Callable[[], Optional[str]]]] = None,
         server: Optional[str] = None,
-        server_url: Optional[str] = None,
         url_params: Optional[Dict[str, str]] = None,
+        server_url: Optional[str] = None,
         client: Optional[HttpClient] = None,
         async_client: Optional[AsyncHttpClient] = None,
         retry_config: OptionalNullable[RetryConfig] = UNSET,
@@ -110,7 +110,9 @@ class Client(BaseSDK):
         ), "The provided async_client must implement the AsyncHttpClient protocol."
 
         security: Any = None
-        if callable(bearer):
+        if bearer is None:
+            security = None
+        elif callable(bearer):
             # pylint: disable=unnecessary-lambda-assignment
             security = lambda: models.Security(bearer=bearer())
         else:

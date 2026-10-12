@@ -6,7 +6,7 @@ from gsmservice_gateway._hooks import HookContext
 from gsmservice_gateway.types import OptionalNullable, UNSET
 from gsmservice_gateway.utils import get_security_from_env
 from gsmservice_gateway.utils.unmarshal_json_response import unmarshal_json_response
-from typing import Any, List, Mapping, Optional
+from typing import Any, Iterable, List, Mapping, Optional
 
 
 class Incoming(BaseSDK):
@@ -86,9 +86,24 @@ class Incoming(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Incoming messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->incoming->list(\n    page: 1,\n    limit: 10\n\n);\n\nif ($response->incomingMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.incoming.list({});\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -98,8 +113,13 @@ class Incoming(BaseSDK):
                 result=unmarshal_json_response(List[models.IncomingMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -189,9 +209,24 @@ class Incoming(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Incoming messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->incoming->list(\n    page: 1,\n    limit: 10\n\n);\n\nif ($response->incomingMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.incoming.list({});\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -201,8 +236,13 @@ class Incoming(BaseSDK):
                 result=unmarshal_json_response(List[models.IncomingMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -219,7 +259,7 @@ class Incoming(BaseSDK):
     def get_by_ids(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -248,7 +288,7 @@ class Incoming(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.GetIncomingMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request(
@@ -289,9 +329,24 @@ class Incoming(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Incoming messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->incoming->getByIds(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->incomingMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.incoming.getByIds({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -301,8 +356,13 @@ class Incoming(BaseSDK):
                 result=unmarshal_json_response(List[models.IncomingMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -319,7 +379,7 @@ class Incoming(BaseSDK):
     async def get_by_ids_async(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -348,7 +408,7 @@ class Incoming(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.GetIncomingMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request_async(
@@ -389,9 +449,24 @@ class Incoming(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Incoming messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->incoming->getByIds(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->incomingMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.incoming.getByIds({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -401,8 +476,13 @@ class Incoming(BaseSDK):
                 result=unmarshal_json_response(List[models.IncomingMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -419,7 +499,7 @@ class Incoming(BaseSDK):
     def remove_by_ids(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -435,7 +515,7 @@ class Incoming(BaseSDK):
 
         If you pass duplicated incoming message IDs in one call, API will process them only once. This request have to be authenticated using **API Access Token**.
 
-        In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc7807)).
+        In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)).
 
         :param ids: List[str] with Message IDs assigned by the system. The system will accept a maximum of 50 identifiers in one call.
         :param retries: Override the default retry configuration for this method
@@ -454,7 +534,7 @@ class Incoming(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.RemoveIncomingMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request(
@@ -495,9 +575,24 @@ class Incoming(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Incoming messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->incoming->removeByIds(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->removedIncomingMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.incoming.removeByIds({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -509,8 +604,13 @@ class Incoming(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -527,7 +627,7 @@ class Incoming(BaseSDK):
     async def remove_by_ids_async(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -543,7 +643,7 @@ class Incoming(BaseSDK):
 
         If you pass duplicated incoming message IDs in one call, API will process them only once. This request have to be authenticated using **API Access Token**.
 
-        In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc7807)).
+        In case of an error, the `ErrorResponse` object will be returned with proper HTTP header status code (our error response complies with [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)).
 
         :param ids: List[str] with Message IDs assigned by the system. The system will accept a maximum of 50 identifiers in one call.
         :param retries: Override the default retry configuration for this method
@@ -562,7 +662,7 @@ class Incoming(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.RemoveIncomingMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request_async(
@@ -603,9 +703,24 @@ class Incoming(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Incoming messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->incoming->removeByIds(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->removedIncomingMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.incoming.removeByIds({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -617,8 +732,13 @@ class Incoming(BaseSDK):
                 ),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res

@@ -16,9 +16,149 @@ As a successful result a `GetSmsPriceResponse` object will be returned with `res
 
 `GetSmsPriceResponse` object will include also `headers` property with `X-Success-Count` (a count of messages which were processed successfully) and `X-Error-Count` (count of messages which were rejected) elements.
 
-### Example Usage
+### Example Usage: bulk
 
-<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" -->
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" example="bulk" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.get_price(request=[
+        {
+            "recipients": "+48999999999",
+            "message": "This is first SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+        {
+            "recipients": "+48999888777",
+            "message": "This is second SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: bulk_cid
+
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" example="bulk_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.get_price(request=[
+        {
+            "recipients": {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            "message": "This is first SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+        {
+            "recipients": {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+            "message": "This is second SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi
+
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" example="multi" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.get_price(request={
+        "recipients": [
+            "+48999999999",
+            "+48999888777",
+        ],
+        "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi_cid
+
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" example="multi_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.get_price(request={
+        "recipients": [
+            {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+        ],
+        "message": "This is SMS message content",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single
+
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" example="single" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -30,6 +170,34 @@ with Client(
     res = client.outgoing.sms.get_price(request={
         "recipients": "+48999999999",
         "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single_cid
+
+<!-- UsageSnippet language="python" operationID="getSmsPrice" method="post" path="/messages/sms/price" example="single_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.get_price(request={
+        "recipients": {
+            "nr": "+48999999999",
+            "cid": "custom-id-A44445T",
+        },
+        "message": "This is SMS message content",
         "sender": "Bramka SMS",
         "type": 1,
         "unicode": True,
@@ -57,7 +225,8 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 4XX             | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 415, 4XX             | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |
 
 ## send
@@ -68,9 +237,149 @@ As a successful result a `SendSmsResponse` object will be returned with `result`
 
 `SendSmsResponse` will also include `headers` property with `X-Success-Count` (a count of messages which were processed successfully), `X-Error-Count` (count of messages which were rejected) and `X-Sandbox` (if a request was made in Sandbox or Production system) elements.
 
-### Example Usage
+### Example Usage: bulk
 
-<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" -->
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" example="bulk" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.send(request=[
+        {
+            "recipients": "+48999999999",
+            "message": "This is first SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+        {
+            "recipients": "+48999888777",
+            "message": "This is second SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: bulk_cid
+
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" example="bulk_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.send(request=[
+        {
+            "recipients": {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            "message": "This is first SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+        {
+            "recipients": {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+            "message": "This is second SMS message content",
+            "sender": "Bramka SMS",
+            "type": 1,
+            "unicode": True,
+            "flash": False,
+            "date_": None,
+        },
+    ])
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi
+
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" example="multi" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.send(request={
+        "recipients": [
+            "+48999999999",
+            "+48999888777",
+        ],
+        "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: multi_cid
+
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" example="multi_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.send(request={
+        "recipients": [
+            {
+                "nr": "+48999999999",
+                "cid": "custom-id-A44445T",
+            },
+            {
+                "nr": "+48999888777",
+                "cid": "custom-id-F44445R",
+            },
+        ],
+        "message": "This is SMS message content",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single
+
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" example="single" -->
 ```python
 from gsmservice_gateway import Client
 
@@ -82,6 +391,34 @@ with Client(
     res = client.outgoing.sms.send(request={
         "recipients": "+48999999999",
         "message": "This is SMS message content.",
+        "sender": "Bramka SMS",
+        "type": 1,
+        "unicode": True,
+        "flash": False,
+        "date_": None,
+    })
+
+    # Handle response
+    print(res)
+
+```
+### Example Usage: single_cid
+
+<!-- UsageSnippet language="python" operationID="sendSms" method="post" path="/messages/sms" example="single_cid" -->
+```python
+from gsmservice_gateway import Client
+
+
+with Client(
+    bearer="<YOUR API ACCESS TOKEN>",
+) as client:
+
+    res = client.outgoing.sms.send(request={
+        "recipients": {
+            "nr": "+48999999999",
+            "cid": "custom-id-A44445T",
+        },
+        "message": "This is SMS message content",
         "sender": "Bramka SMS",
         "type": 1,
         "unicode": True,
@@ -109,5 +446,6 @@ with Client(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
-| models.ErrorResponseError | 400, 401, 403, 4XX        | application/problem+json  |
+| models.ErrorResponseError | 401, 405                  | application/problem+json  |
+| models.ErrorResponseError | 400, 403, 415, 4XX        | application/problem+json  |
 | models.ErrorResponseError | 5XX                       | application/problem+json  |

@@ -17,7 +17,7 @@ class Accounts(BaseSDK):
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.AccountResponse:
+    ) -> models.GetAccountDetailsResponse:
         r"""Get account details
 
         Get current account balance and other details of your account. You can check also account limit and if account is main one. Main accounts have unlimited privileges and using [User Panel](https://panel.szybkisms.pl) you can create as many subaccounts as you need.
@@ -76,18 +76,39 @@ class Accounts(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Accounts"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->accounts->get(\n\n);\n\nif ($response->accountResponse !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.accounts.get();\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["401", "403", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
-            return unmarshal_json_response(models.AccountResponse, http_res)
-        if utils.match_response(
-            http_res, ["401", "403", "4XX"], "application/problem+json"
-        ):
+            return models.GetAccountDetailsResponse(
+                result=unmarshal_json_response(models.AccountResponse, http_res),
+                headers={},
+            )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
+        if utils.match_response(http_res, ["403", "4XX"], "application/problem+json"):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
             )
@@ -107,7 +128,7 @@ class Accounts(BaseSDK):
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.AccountResponse:
+    ) -> models.GetAccountDetailsResponse:
         r"""Get account details
 
         Get current account balance and other details of your account. You can check also account limit and if account is main one. Main accounts have unlimited privileges and using [User Panel](https://panel.szybkisms.pl) you can create as many subaccounts as you need.
@@ -166,18 +187,39 @@ class Accounts(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Accounts"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->accounts->get(\n\n);\n\nif ($response->accountResponse !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.accounts.get();\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["401", "403", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
-            return unmarshal_json_response(models.AccountResponse, http_res)
-        if utils.match_response(
-            http_res, ["401", "403", "4XX"], "application/problem+json"
-        ):
+            return models.GetAccountDetailsResponse(
+                result=unmarshal_json_response(models.AccountResponse, http_res),
+                headers={},
+            )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
+        if utils.match_response(http_res, ["403", "4XX"], "application/problem+json"):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
             )
@@ -198,7 +240,7 @@ class Accounts(BaseSDK):
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.AccountResponse:
+    ) -> models.GetSubaccountDetailsResponse:
         r"""Get subaccount details
 
         Check account balance and other details such subcredit balance of a subaccount. Subaccounts are additional users who can access your account services and the details. You can restrict access level and setup privileges to subaccounts using [User Panel](https://panel.szybkisms.pl).
@@ -265,17 +307,40 @@ class Accounts(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Accounts"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->accounts->getSubaccount(\n    userLogin: 'some-login'\n);\n\nif ($response->accountResponse !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.accounts.getSubaccount({\n    userLogin: "some-login",\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
-            return unmarshal_json_response(models.AccountResponse, http_res)
+            return models.GetSubaccountDetailsResponse(
+                result=unmarshal_json_response(models.AccountResponse, http_res),
+                headers={},
+            )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -297,7 +362,7 @@ class Accounts(BaseSDK):
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.AccountResponse:
+    ) -> models.GetSubaccountDetailsResponse:
         r"""Get subaccount details
 
         Check account balance and other details such subcredit balance of a subaccount. Subaccounts are additional users who can access your account services and the details. You can restrict access level and setup privileges to subaccounts using [User Panel](https://panel.szybkisms.pl).
@@ -364,17 +429,40 @@ class Accounts(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Accounts"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->accounts->getSubaccount(\n    userLogin: 'some-login'\n);\n\nif ($response->accountResponse !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.accounts.getSubaccount({\n    userLogin: "some-login",\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
-            return unmarshal_json_response(models.AccountResponse, http_res)
+            return models.GetSubaccountDetailsResponse(
+                result=unmarshal_json_response(models.AccountResponse, http_res),
+                headers={},
+            )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res

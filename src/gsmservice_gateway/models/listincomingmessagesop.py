@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 from .incomingmessage import IncomingMessage, IncomingMessageTypedDict
-from gsmservice_gateway.types import BaseModel
+from gsmservice_gateway.types import BaseModel, UNSET_SENTINEL
 from gsmservice_gateway.utils import FieldMetadata, QueryParamMetadata
+from pydantic import model_serializer
 from typing import Dict, List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -27,6 +28,22 @@ class ListIncomingMessagesRequest(BaseModel):
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = 10
     r"""Number of results on one page"""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(["page", "limit"])
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
 
 
 class ListIncomingMessagesResponseTypedDict(TypedDict):

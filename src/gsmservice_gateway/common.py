@@ -16,7 +16,7 @@ class Common(BaseSDK):
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.PingResponse:
+    ) -> models.PingResponse1:
         r"""Checks API availability and version
 
         Check the API connection and the current API availability status. Also you will get the current API version number.
@@ -72,15 +72,38 @@ class Common(BaseSDK):
                 operation_id="ping",
                 oauth2_scopes=None,
                 security_source=None,
+                tags=["Common"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()->build();\n\n\n\n$response = $sdk->common->ping(\n\n);\n\nif ($response->pingResponse !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client();\n\nasync function run() {\n  const result = await client.common.ping();\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "4XX", "503", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
-            return unmarshal_json_response(models.PingResponse, http_res)
+            return models.PingResponse1(
+                result=unmarshal_json_response(models.PingResponse, http_res),
+                headers={},
+            )
+        if utils.match_response(http_res, "405", "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, ["400", "4XX"], "application/problem+json"):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -101,7 +124,7 @@ class Common(BaseSDK):
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
         http_headers: Optional[Mapping[str, str]] = None,
-    ) -> models.PingResponse:
+    ) -> models.PingResponse1:
         r"""Checks API availability and version
 
         Check the API connection and the current API availability status. Also you will get the current API version number.
@@ -157,15 +180,38 @@ class Common(BaseSDK):
                 operation_id="ping",
                 oauth2_scopes=None,
                 security_source=None,
+                tags=["Common"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()->build();\n\n\n\n$response = $sdk->common->ping(\n\n);\n\nif ($response->pingResponse !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client();\n\nasync function run() {\n  const result = await client.common.ping();\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "4XX", "503", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
         response_data: Any = None
         if utils.match_response(http_res, "200", "application/json"):
-            return unmarshal_json_response(models.PingResponse, http_res)
+            return models.PingResponse1(
+                result=unmarshal_json_response(models.PingResponse, http_res),
+                headers={},
+            )
+        if utils.match_response(http_res, "405", "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(http_res, ["400", "4XX"], "application/problem+json"):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res

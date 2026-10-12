@@ -9,7 +9,7 @@ from gsmservice_gateway.sms import Sms
 from gsmservice_gateway.types import OptionalNullable, UNSET
 from gsmservice_gateway.utils import get_security_from_env
 from gsmservice_gateway.utils.unmarshal_json_response import unmarshal_json_response
-from typing import Any, List, Mapping, Optional
+from typing import Any, Iterable, List, Mapping, Optional
 
 
 class Outgoing(BaseSDK):
@@ -30,7 +30,7 @@ class Outgoing(BaseSDK):
     def get_by_ids(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -59,7 +59,7 @@ class Outgoing(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.GetMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request(
@@ -100,9 +100,24 @@ class Outgoing(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->outgoing->getByIds(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->messages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.getByIds({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -112,8 +127,13 @@ class Outgoing(BaseSDK):
                 result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -130,7 +150,7 @@ class Outgoing(BaseSDK):
     async def get_by_ids_async(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -159,7 +179,7 @@ class Outgoing(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.GetMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request_async(
@@ -200,9 +220,24 @@ class Outgoing(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->outgoing->getByIds(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->messages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.getByIds({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -212,8 +247,13 @@ class Outgoing(BaseSDK):
                 result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -230,7 +270,7 @@ class Outgoing(BaseSDK):
     def cancel_scheduled(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -261,7 +301,7 @@ class Outgoing(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.CancelMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request(
@@ -302,9 +342,24 @@ class Outgoing(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->outgoing->cancelScheduled(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->cancelledMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.cancelScheduled({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -314,8 +369,13 @@ class Outgoing(BaseSDK):
                 result=unmarshal_json_response(List[models.CancelledMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -332,7 +392,7 @@ class Outgoing(BaseSDK):
     async def cancel_scheduled_async(
         self,
         *,
-        ids: List[int],
+        ids: Iterable[int],
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -363,7 +423,7 @@ class Outgoing(BaseSDK):
             base_url = self._get_url(base_url, url_variables)
 
         request = models.CancelMessagesRequest(
-            ids=ids,
+            ids=utils.unmarshal(ids, List[int]),
         )
 
         req = self._build_request_async(
@@ -404,9 +464,24 @@ class Outgoing(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->outgoing->cancelScheduled(\n    ids: [\n        43456,\n    ]\n);\n\nif ($response->cancelledMessages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.cancelScheduled({\n    ids: [\n      43456,\n    ],\n  });\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -416,8 +491,13 @@ class Outgoing(BaseSDK):
                 result=unmarshal_json_response(List[models.CancelledMessage], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -507,9 +587,24 @@ class Outgoing(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->outgoing->list(\n    page: 1,\n    limit: 10\n\n);\n\nif ($response->messages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.list({});\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -519,8 +614,13 @@ class Outgoing(BaseSDK):
                 result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
@@ -610,9 +710,24 @@ class Outgoing(BaseSDK):
                 security_source=get_security_from_env(
                     self.sdk_configuration.security, models.Security
                 ),
+                tags=["Outgoing messages"],
+                extensions={
+                    "x-codeSamples": [
+                        {
+                            "label": "PHP 8.2 SDK",
+                            "lang": "php",
+                            "source": "declare(strict_types=1);\n\nrequire 'vendor/autoload.php';\n\nuse Gsmservice\\Gateway;\n\n$sdk = Gateway\\Client::builder()\n    ->setSecurity(\n        '<YOUR API ACCESS TOKEN>'\n    )\n    ->build();\n\n\n\n$response = $sdk->outgoing->list(\n    page: 1,\n    limit: 10\n\n);\n\nif ($response->messages !== null) {\n    // handle response\n}",
+                        },
+                        {
+                            "label": "Typescript SDK",
+                            "lang": "typescript",
+                            "source": 'import { Client } from "@gsmservice-pl/messaging-sdk-typescript";\n\nconst client = new Client({\n  bearer: "<YOUR API ACCESS TOKEN>",\n});\n\nasync function run() {\n  const result = await client.outgoing.list({});\n\n  console.log(result);\n}\n\nrun();',
+                        },
+                    ]
+                },
             ),
             request=req,
-            error_status_codes=["400", "401", "403", "404", "4XX", "5XX"],
+            is_error_status_code=lambda c: utils.match_status_codes(["4XX", "5XX"], c),
             retry_config=retry_config,
         )
 
@@ -622,8 +737,13 @@ class Outgoing(BaseSDK):
                 result=unmarshal_json_response(List[models.Message], http_res),
                 headers=utils.get_response_headers(http_res.headers),
             )
+        if utils.match_response(http_res, ["401", "405"], "application/problem+json"):
+            response_data = unmarshal_json_response(
+                models.ErrorResponseErrorData, http_res
+            )
+            raise models.ErrorResponseError(response_data, http_res)
         if utils.match_response(
-            http_res, ["400", "401", "403", "404", "4XX"], "application/problem+json"
+            http_res, ["400", "403", "404", "4XX"], "application/problem+json"
         ):
             response_data = unmarshal_json_response(
                 models.ErrorResponseErrorData, http_res
